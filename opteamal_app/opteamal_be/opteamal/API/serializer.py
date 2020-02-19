@@ -9,7 +9,7 @@ class EmployeeSerializer(serializers.ModelSerializer):
 class ProjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Project
-        fields = ('project_name','project_lead_fname','project_lead_lname','project_start','project_due','client')
+        fields = ('project_name','project_lead','project_lead_fname','project_lead_lname','project_start','project_due','client')
 
     project_lead_fname = serializers.SerializerMethodField('get_project_leads_fname')
     def get_project_leads_fname(self, obj):

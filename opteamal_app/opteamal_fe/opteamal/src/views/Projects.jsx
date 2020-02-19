@@ -5,6 +5,7 @@ import {
   Row,
   Col,
   Table,
+  ButtonToolbar,
   FormGroup,
   ControlLabel,
   FormControl
@@ -17,11 +18,13 @@ import Button from "../components/CustomButton/CustomButton.jsx";
 
 import avatar from "../assets/img/faces/face-3.jpg";
 import { projectTdArray, projectThArray } from "../variables/Variables.jsx";
+import ProjectTable from "../components/ProjectTable/ProjectTable.jsx";
 
 class Projects extends Component {
 
   state = {
-    projects: []
+    projects: [],
+    projects_count: 0
   }
 
 
@@ -31,6 +34,7 @@ class Projects extends Component {
     .then(res => res.json())
     .then((data) => {
       this.setState({ projects: data })
+      this.setState({projects_count: this.state.projects.length})
     })
     .catch(console.log)
   };
@@ -39,34 +43,41 @@ class Projects extends Component {
       <div className="content">
         <Grid fluid>
         <Row>
+        <div>
+            <Col md={12}>
+              <Row>
+                <Col xsOffset={0} md={12}>
+                  <ButtonToolbar>
+                        <Button bsStyle="default" round fill>Add Project</Button>
+                        <Button bsStyle="default" round fill>Export</Button>
+                        <Button bsStyle="default" round fill>Print</Button>
+                    </ButtonToolbar>
+                  </Col>
+              </Row>
+              <br></br>
+            </Col>
+            </div>
+            <br></br>
             <Col md={12}>
               <Card
                 title="Projects Overview"
-                category=""
+                category={"Projects (" +this.state.projects_count +")"}
                 ctTableFullWidth
                 ctTableResponsive
                 content={
-                  <Table striped hover>
-                    <thead>
+                <Table hover>
+                  <thead>
                       <tr>
-                        {projectThArray.map((prop, key) => {
-                          return <th key={key}>{prop}</th>;
-                        })}
+                        <th></th>
+                        <th>Project Name</th>
+                        <th>Project Lead</th> 
+                        <th>Start Date</th> 
+                        <th>Due Date</th> 
+                        <th>Client</th>   
                       </tr>
-                    </thead>
-                    <tbody>
-                      {this.state.projects.map((project) => (
-                          <tr>
-                              <td>{project.project_name}</td>
-                              <td>{project.project_lead_fname} {project.project_lead_lname}</td>
-                              <td>{project.project_start}</td>
-                              <td>{project.project_due}</td>
-                              <td>{project.client}</td>
-                          </tr>
-                        
-                      ))}
-                    </tbody>
-                  </Table>
+                  </thead>
+                    <ProjectTable projects={this.state.projects}/>
+                </Table>
                 }
               />
             </Col>

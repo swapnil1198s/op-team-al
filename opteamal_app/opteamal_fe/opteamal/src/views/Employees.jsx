@@ -4,18 +4,32 @@ import {
   Grid,
   Row,
   Col,
-  Table
+  Table,
+  ButtonToolbar,
+  OverlayTrigger,
+  Tooltip
+
 } from "react-bootstrap";
 
 import { Card } from "../components/Card/Card.jsx";
-import CustomButton from "../components/CustomButton/CustomButton.jsx"
-import { employeeThArray, employeeTdArray } from "../variables/Variables.jsx";
+import { EmployeeTable } from "../components/EmployeeTable/EmployeeTable.jsx"
+import Button from "../components/CustomButton/CustomButton.jsx";
+import AddEmployeeDialog from "../components/AddEmployeeDialog/AddEmployeeDialog.jsx"
+
 
 class Employees extends Component {
 
   state = {
-    employees: []
+    employees: [],
+    employees_count: 0,
+    showPopup: false
   }
+
+  togglePopup() {  
+    this.setState({  
+         showPopup: !this.state.showPopup  
+    });  
+     } 
 
 
   componentDidMount() {
@@ -24,53 +38,63 @@ class Employees extends Component {
     .then(res => res.json())
     .then((data) => {
       this.setState({ employees: data })
+      this.setState({employees_count: this.state.employees.length})
     })
     .catch(console.log)
   };
   render() {
+    const edit = <Tooltip id="edit_tooltip">Edit Employee</Tooltip>;
+    const remove = <Tooltip id="remove_tooltip">Delete Employee</Tooltip>;
     return (
       <div className="content">
         <Grid fluid>
         <Row>
+          <div>
+            <Col md={12}>
+              <Row>
+                <Col xsOffset={0} md={12}>
+                  <ButtonToolbar>
+                        <Button onClick={this.togglePopup.bind(this)} bsStyle="default" round fill>Add Employee</Button>
+                        <Button bsStyle="default" round fill>Export</Button>
+                        <Button bsStyle="default" round fill>Print</Button>
+                    </ButtonToolbar>
+                  </Col>
+              </Row>
+              <br></br>
+            </Col>
+            </div>
+            <br></br>
             <Col md={12}>
               <Card
-                content={
-                  <div><CustomButton block pullRight></CustomButton></div>
-                }
-              />
-
-              <Card
                 title="Employee Overview"
-                category=""
+                category={"Employees ("+this.state.employees_count+")"}
                 ctTableFullWidth
                 ctTableResponsive
-                content={
-                  <Table striped hover>
+                content={                  
+                  <Table hover>
                     <thead>
-                      <tr>
-                        {employeeThArray.map((prop, key) => {
-                          return <th key={key}>{prop}</th>;
-                        })}
-                      </tr>
+                        <tr>
+                          <th></th>
+                          <th>Name</th>
+                          <th>Email</th> 
+                          <th>Job Title</th> 
+                          <th>Start Date</th> 
+                          <th>Skills</th>   
+                        </tr>
                     </thead>
-                    <tbody>
-                      {this.state.employees.map((employee) => (
-                          <tr>
-                              <td>{employee.first_name} {employee.last_name}</td>
-                              <td>{employee.email}</td>
-                              <td>{employee.title}</td>
-                              <td>{employee.start_date}</td>
-                              <td>{employee.skills}</td>
-                          </tr>
-                        
-                      ))}
-                    </tbody>
+                      <EmployeeTable employees={this.state.employees}/>
                   </Table>
                 }
               />
             </Col>
           </Row>
         </Grid>
+        {this.state.showPopup ?  
+        <AddEmployeeDialog   
+          closePopup={this.togglePopup.bind(this)}  
+        />  
+: null  
+}  
       </div>
     );
   }

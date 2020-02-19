@@ -245,7 +245,7 @@ var style = {
 // // // For tables
 // //
 //
-const employeeThArray = [ "Name", "Email", "Title", "Date Started", "Skills"];
+const employeeThArray = ["Name", "Email", "Title", "Date Started", "Skills",""];
 const employeeTdArray = [
   ["Dakota Rice", "john.doe@google.com", "Software Engineer", "2/18/2020", "Java"],
   ["Minerva Hooper", "john.doe@google.com", "Project Manager", "2/18/2020", "PMP"],
@@ -256,7 +256,7 @@ const employeeTdArray = [
 ];
 
 
-const projectThArray = [ "Project Name", "Project Lead", "Project Date", "Project Due", "Client"];
+const projectThArray = ["","Project Name", "Project Lead", "Project Date", "Project Due", "Client"];
 const projectTdArray = [
   ["Op-Team-Al", "Johnnie Cooper", "2/18/2019", "2/18/2020", "Booz Allen Hamilton"],
   ["Gepard", "John Doe", "2/18/2019", "2/18/2020", "Mercedes Benz"]
