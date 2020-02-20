@@ -9,7 +9,7 @@ This is a talent management system that ensures the proper talent is assigned to
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
 
-#Django Backend Instructions
+# Django Backend Instructions
 ### Prerequisites
 You will need Python 3.* installed and basic knowledge of running Python cmds
 ```
@@ -41,7 +41,7 @@ python manage.py runserver
 2)Navigate to "http://localhost:3000/admin/dashboard"
 
 
-#ReactJS Frontend Instructions
+# ReactJS Frontend Instructions
 
 ### Prerequisites
 
