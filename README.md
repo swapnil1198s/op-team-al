@@ -1,7 +1,9 @@
 # op-team-al
 ## Talent Management System
 
-This a talent management system to ensure the proper talent is assigned to the correct project by recommending the correct canidates for the project. 
+This is a talent management system that ensures the proper talent is assigned to the correct project by recommending the best canidates for the project. 
+![Architecure](https://github.com/Johnnie843/op-team-al/blob/master/Documents/Architecure/ArchitecureOverview.PNG)
+
 
 ## Getting Started
 
