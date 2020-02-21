@@ -17,6 +17,7 @@ import Button from "../components/CustomButton/CustomButton.jsx";
 import AddEmployeeDialog from "../components/AddEmployeeDialog/AddEmployeeDialog.jsx"
 
 
+
 class Employees extends Component {
 
   state = {
@@ -47,8 +48,11 @@ class Employees extends Component {
     const remove = <Tooltip id="remove_tooltip">Delete Employee</Tooltip>;
     return (
       <div className="content">
+        
         <Grid fluid>
+        {!this.state.showPopup  ?
         <Row>
+        
           <div>
             <Col md={12}>
               <Row>
@@ -87,12 +91,17 @@ class Employees extends Component {
                 }
               />
             </Col>
+            
           </Row>
+          : null
+        }
         </Grid>
         {this.state.showPopup ?  
-        <AddEmployeeDialog   
-          closePopup={this.togglePopup.bind(this)}  
-        />  
+        <Row>
+          <AddEmployeeDialog   
+            closePopup={this.togglePopup.bind(this)}  
+          />
+        </Row>  
 : null  
 }  
       </div>
