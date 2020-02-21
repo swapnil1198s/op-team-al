@@ -32,6 +32,14 @@ class Employees extends Component {
     });  
      } 
 
+  callEmployeeApi(){
+
+
+
+
+    
+  }
+
 
   componentDidMount() {
     const url = 'http://localhost:8000/api/employees'; 
@@ -43,6 +51,8 @@ class Employees extends Component {
     })
     .catch(console.log)
   };
+
+
   render() {
     const edit = <Tooltip id="edit_tooltip">Edit Employee</Tooltip>;
     const remove = <Tooltip id="remove_tooltip">Delete Employee</Tooltip>;
@@ -80,10 +90,13 @@ class Employees extends Component {
                         <tr>
                           <th></th>
                           <th>Name</th>
-                          <th>Email</th> 
-                          <th>Job Title</th> 
+                          <th>Email</th>
+                          <th>Titles</th>
                           <th>Start Date</th> 
-                          <th>Skills</th>   
+                          <th>Next Availability</th> 
+                          <th>Location</th>
+                          <th>Remote Work</th>
+                          <th>Relocation</th>  
                         </tr>
                     </thead>
                       <EmployeeTable employees={this.state.employees}/>

@@ -29,10 +29,12 @@ class AddEmployeeDialog extends Component {
           email:"",
           start_date:"1/1/2020",
           availability:"1/1/2030",
-          location:"",
+          location:0,
           remote_work:false,
+          titles:[],
           talents:[],
-          desiredLocation:[]
+          desiredLocation:[],
+          managementLevel:0
 
           
         };
@@ -48,39 +50,59 @@ class AddEmployeeDialog extends Component {
         this.setState({availability:this.availability.value});
      }
      handleLocation = (location) => {
-        this.setState({locations:location.value});
+        this.setState({location});
+     }
+     handleManagementLevel = (managementLevel) => {
+        this.setState({managementLevel});
      }
      handleRemoteWork = (remote_work) => {
          this.setState({remote_work:remote_work.value})
      }
+     handleTitles = (titles) => {
+        this.setState({titles})
+    }
      handleTalents = (talents) => {
          this.setState({talents})
      }
      handDesiredLocation = (desiredLocation) => {
         this.setState({desiredLocation})
     }
-    handleEditing = () => {
+    createEmployee = () => {
 
         const talentsArr = []
         const desiredLocationArr = []
+        const titlesArr = []
         this.state.talents.forEach(item => talentsArr.push(item.value));
         this.state.desiredLocation.forEach(item => desiredLocationArr.push(item.value));
-         const json =  '{'
-         +'"f_name" : "'+this.state.f_name + '",'
-         +'"l_name" : "'+ this.state.l_name + '",'
-         +'"email" : "'+ this.state.email + '",'
-         +'"start_date" : "'+ this.state.start_date + '",'
-         +'"availability" : "'+ this.state.availability + '",'
-         +'"location" : "'+ this.state.location + '",'
-         +'"remote_work" : '+ this.state.remote_work + ','
-         +'"relocate" : '+ this.state.relocate + ','
-         +'"talents" : ['+ talentsArr + '],'
-         +'"desiredLocation" : ['+ desiredLocationArr+ ']'
-         +'}';
+        this.state.titles.forEach(item => titlesArr.push(item.value));
 
-        console.log(json)
+        fetch('http://localhost:8000/api/employees/', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                f_name: this.state.f_name,
+                l_name: this.state.l_name,
+                email: this.state.email,
+                start_date: this.state.start_date,
+                availability: this.state.availability,
+                location: this.state.location.value,
+                remote_work: this.state.remote_work,
+                relocate: this.state.relocate,
+            })
+        }).then(res => res.json())
+        .then((data) => {
+          console.log(data);
+          window.location.reload();
+        })
+        .catch(console.log)
         
       };
+
+
+
     handleSubmit = (e) => {
         
         this.handleEditing();
@@ -96,7 +118,7 @@ class AddEmployeeDialog extends Component {
   render() {
 
     const options = [
-        { value: 'Charleston', label: 'Charleston' },
+        { value: '2', label: 'Charleston' },
       ]
 
     return (
@@ -113,7 +135,6 @@ class AddEmployeeDialog extends Component {
                         <FormGroup>
                             <ControlLabel>First Name</ControlLabel>
                             <FormControl 
-                                bsClass="form-control"
                                 type="text"
                                 placeholder= "First Name"
                                 defaultValue= ""
@@ -127,7 +148,6 @@ class AddEmployeeDialog extends Component {
                         <FormGroup>
                         <ControlLabel>Last Name</ControlLabel>
                             <FormControl 
-                                bsClass="form-control"
                                 type="text"
                                 placeholder= "Last Name"
                                 defaultValue= ""
@@ -138,12 +158,11 @@ class AddEmployeeDialog extends Component {
                         </div>
                     </Row> 
                     <Row>
-                        <div className="col-md-4">
+                        <div className="col-md-6">
                         <FormGroup>
                             <ControlLabel>Email address</ControlLabel>
                             <FormControl 
-                                bsClass="form-control"
-                                type="text"
+                                type="email"
                                 placeholder= "Email"
                                 defaultValue= ""
                                 inputRef={(ref) => {this.email = ref}}
@@ -151,12 +170,34 @@ class AddEmployeeDialog extends Component {
                             />
                         </FormGroup>
                         </div>
+                        <div className="col-md-6">
+                        <FormGroup>
+                            <ControlLabel>Management Level</ControlLabel>
+                            <Select
+                            options={[{value:1, label:'Consultant' }, {value:2, label:'Senior Consultant' }]}
+                            onChange={this.handleManagementLevel}
+                            />
+                        </FormGroup>
+                        </div>
+                    </Row>
+                    <Row>
+                        <div className="col-md-12">
+                        <FormGroup>
+                            <ControlLabel>Titles</ControlLabel>
+                            <Select
+                            isMulti
+                            options={[{value:1, label:'Software Engineer' }, {value:2, label:'Business Analyst' }]}
+                            onChange={this.handTitles}
+                            />
+                        </FormGroup>
+                        </div>
+                    </Row>
+                    <Row>
                     
-                        <div className="col-md-4">
+                        <div className="col-md-6">
                         <FormGroup>
                         <ControlLabel>Start Date</ControlLabel>
                             <FormControl 
-                                bsClass="form-control"
                                 type="date"
                                 placeholder= "Start Date"
                                 defaultValue= ""
@@ -165,11 +206,10 @@ class AddEmployeeDialog extends Component {
                             />
                         </FormGroup>
                         </div>
-                        <div className="col-md-4">
+                        <div className="col-md-6">
                         <FormGroup>
                         <ControlLabel>Next Availability</ControlLabel>
                             <FormControl 
-                                bsClass="form-control"
                                 type="date"
                                 placeholder= "Start Date"
                                 defaultValue= ""
@@ -185,7 +225,8 @@ class AddEmployeeDialog extends Component {
                     <FormGroup className="col-md-4">
                         <ControlLabel>Location</ControlLabel>
                         <Select
-                         options={[{value:'Charleston', label:'Charleston' }]}
+                        
+                         options={[{value:'2', label:'Charleston' }]}
                          onChange={this.handleLocation}
                          />
                          
@@ -241,7 +282,7 @@ class AddEmployeeDialog extends Component {
                     </Row>
 
                     <ButtonToolbar>
-                        <Button onClick = {this.handleSubmit} bsStyle="default" round fill>
+                        <Button onClick = {this.createEmployee} bsStyle="default" round fill>
                              Add Employee
                         </Button>
                         <Button onClick={this.props.closePopup} bsStyle="default" round fill>

@@ -2,31 +2,32 @@ from django.shortcuts import render
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework import status, viewsets
 from rest_framework.generics import ListAPIView
 
-from .models import Employee, Project
-from .serializer import EmployeeSerializer, ProjectSerializer
+from .models import Employee, Project, Location, Title
+from .serializer import EmployeeSerializer, ProjectSerializer, LocationSerializer, TitleSerializer
 
-class AllEmployees(ListAPIView):
+class EmployeesViewSet(viewsets.ModelViewSet):
     queryset = Employee.objects.all()
     serializer_class = EmployeeSerializer
 
-    def post(self, request, format=None):
-        serializer = EmployeeSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-class AllProjects(ListAPIView):
+class ProjectsViewSet(viewsets.ModelViewSet):
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
 
-    def post(self, request, format=None):
-        serializer = ProjectSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+class LocationsViewSet(viewsets.ModelViewSet):
+    queryset = Location.objects.all()
+    serializer_class = LocationSerializer
 
+class TitleViewSet(viewsets.ModelViewSet):
+
+    queryset = Title.objects.all()
+    serializer_class = TitleSerializer
+
+    def get_object(self):
+        if self.request.method == 'PUT':
+            obj, created = Title.objects.get_or_create(pk=self.kwargs.get('pk'))
+            return obj
+        else:
+            return super(TitleViewSet, self).get_object()

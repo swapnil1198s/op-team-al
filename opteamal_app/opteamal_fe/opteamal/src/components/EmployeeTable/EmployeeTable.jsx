@@ -12,6 +12,18 @@ export class EmployeeTable extends Component {
       [target.name]: target.checked
     });
   };
+
+  processTitles(array){
+
+    let displayTitles = []
+    array.forEach(element => {
+      displayTitles.push(element.title)
+    });
+
+    return displayTitles.toString()
+
+  }
+
   render() {
     const edit = <Tooltip id="edit_tooltip">Edit Employee</Tooltip>;
     const remove = <Tooltip id="remove_tooltip">Remove Employee</Tooltip>;
@@ -28,11 +40,14 @@ export class EmployeeTable extends Component {
               isChecked={i === 1 || i === 2 ? true : false}
             />
           </td>
-          <td>{employees[i].first_name} {employees[i].last_name}</td>
+          <td>{employees[i].f_name} {employees[i].l_name}</td>
           <td>{employees[i].email}</td>
-          <td>{employees[i].title}</td>
+          <td>{this.processTitles(employees[i].titles)}</td> 
           <td>{employees[i].start_date}</td>
-          <td>{employees[i].skills}</td>
+          <td>{employees[i].availability}</td>
+          <td>{employees[i].location}</td>
+          <td>{employees[i].remote_work.toString()}</td>
+          <td>{employees[i].relocate.toString()}</td>
           <td className="td-actions">
             <OverlayTrigger placement="top" overlay={edit}>
               <Button bsStyle="info" simple type="button" bsSize="xs">

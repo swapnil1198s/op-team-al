@@ -30,6 +30,7 @@ MANIFEST
 #  before PyInstaller builds the exe, so as to inject date/other infos into it.
 *.manifest
 *.spec
+*.idea
 
 # Installer logs
 pip-log.txt
@@ -106,12 +107,21 @@ venv.bak/
 
 
 #pycharm
-.idea
+*/.idea
+*.idea
+.idea/*
 
 #node_modules
 node_modules
 node_modules/
 
 #mac
-.DS_store
+*.DS_store
+
+#migrations
+
+*/migrations/
+/migrations
+migrations
+*migratons
 
