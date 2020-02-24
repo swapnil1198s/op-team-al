@@ -3,16 +3,12 @@
   <component name="ChangeListManager">
     <list default="true" id="bd115969-7a91-41bb-b90b-7a5efadd17f6" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/API/migrations/0001_initial.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/API/migrations/0002_employee_skills.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/API/migrations/0003_project.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/API/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/API/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/API/serializer.py" beforeDir="false" afterPath="$PROJECT_DIR$/API/serializer.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/API/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/API/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/opteamal/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/opteamal/settings.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/opteamal/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/opteamal/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../opteamal_fe/opteamal/src/components/AddEmployeeDialog/AddEmployeeDialog.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../../opteamal_fe/opteamal/src/components/AddEmployeeDialog/AddEmployeeDialog.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../opteamal_fe/opteamal/src/views/Employees.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../../opteamal_fe/opteamal/src/views/Employees.jsx" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -130,7 +126,7 @@
       <workItem from="1581353024075" duration="2106000" />
       <workItem from="1581380172673" duration="2162000" />
       <workItem from="1581384919822" duration="25705000" />
-      <workItem from="1582121732917" duration="32425000" />
+      <workItem from="1582121732917" duration="62657000" />
     </task>
     <servers />
   </component>

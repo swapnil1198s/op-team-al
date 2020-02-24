@@ -32,15 +32,6 @@ class Employees extends Component {
     });  
      } 
 
-  callEmployeeApi(){
-
-
-
-
-    
-  }
-
-
   componentDidMount() {
     const url = 'http://localhost:8000/api/employees'; 
     fetch(url)
@@ -48,6 +39,7 @@ class Employees extends Component {
     .then((data) => {
       this.setState({ employees: data })
       this.setState({employees_count: this.state.employees.length})
+      console.log(data)
     })
     .catch(console.log)
   };
@@ -96,7 +88,8 @@ class Employees extends Component {
                           <th>Next Availability</th> 
                           <th>Location</th>
                           <th>Remote Work</th>
-                          <th>Relocation</th>  
+                          <th>Relocation</th> 
+                          <th>Talents</th> 
                         </tr>
                     </thead>
                       <EmployeeTable employees={this.state.employees}/>

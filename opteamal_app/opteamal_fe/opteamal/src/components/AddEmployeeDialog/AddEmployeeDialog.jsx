@@ -34,11 +34,57 @@ class AddEmployeeDialog extends Component {
           titles:[],
           talents:[],
           desiredLocation:[],
-          managementLevel:0
-
-          
+          managementLevel:0,
+          possible_titles:[],
+          possible_levels:[],
+          possible_locations:[],
+          possible_talents:[]
         };
     }
+
+
+    componentDidMount() {
+        
+        fetch('http://localhost:8000/api/titles/')
+        .then(res => res.json())
+        .then((data) => {
+            console.log(data)
+            let titles = data.map(opt => ({ value: opt.id, label: opt.title }));
+
+            this.setState({possible_titles:titles}); 
+        })
+        .catch(console.log)
+        
+        fetch('http://localhost:8000/api/managementlevel/')
+        .then(res => res.json())
+        .then((data) => {
+            console.log(data)
+            let levels = data.map(opt => ({ value: opt.id, label: opt.level }));
+            this.setState({possible_levels:levels}); 
+        })
+        .catch(console.log)
+
+        fetch('http://localhost:8000/api/locations/')
+        .then(res => res.json())
+        .then((data) => {
+            console.log(data)
+            let levels = data.map(opt => ({ value: opt.id, label: opt.city_name }));
+            this.setState({possible_locations:levels}); 
+        })
+        .catch(console.log)
+
+        fetch('http://localhost:8000/api/talents/')
+        .then(res => res.json())
+        .then((data) => {
+            console.log(data)
+            let talents = data.map(opt => ({ value: opt.id, label: opt.talent }));
+            this.setState({possible_talents:talents}); 
+        })
+        .catch(console.log)
+
+      };
+
+
     handleRelocation = (selectedOption) => {
         this.setState({relocate:selectedOption.value});
       }
@@ -67,6 +113,87 @@ class AddEmployeeDialog extends Component {
      handDesiredLocation = (desiredLocation) => {
         this.setState({desiredLocation})
     }
+    createTitleEntry = (employee) => {
+
+        this.state.titles.forEach(function(title) {
+            console.log(title.label);
+            console.log(employee.id)
+           
+            fetch('http://localhost:8000/api/title/entry/', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    employee_id: employee.id,
+                    title_id : title.value
+                })
+            }).then(res => res.json())
+            .then((data) => {
+            console.log(data);
+            })
+            .catch(console.log)
+        
+            
+        });
+
+    }
+
+    createDesiredLocations = (employee) => {
+
+        this.state.desiredLocation.forEach(function(location) {
+            console.log(location.label);
+            console.log(employee.id)
+           
+            fetch('http://localhost:8000/api/desiredlocations/', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    employee_id: employee.id,
+                    location_id : location.value
+                })
+            }).then(res => res.json())
+            .then((data) => {
+            console.log(data);
+            })
+            .catch(console.log)
+        
+            
+        });
+
+    }
+
+    createTalents = (employee) => {
+
+        this.state.talents.forEach(function(talent) {
+            console.log(talent.label);
+            console.log(employee.id)
+           
+            fetch('http://localhost:8000/api/talent/entry/', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    employee_id: employee.id,
+                    talent_id : talent.value
+                })
+            }).then(res => res.json())
+            .then((data) => {
+            console.log(data);
+            })
+            .catch(console.log)
+        
+            
+        });
+
+    }
+
     createEmployee = () => {
 
         const talentsArr = []
@@ -86,15 +213,19 @@ class AddEmployeeDialog extends Component {
                 f_name: this.state.f_name,
                 l_name: this.state.l_name,
                 email: this.state.email,
+                management_level_id: this.state.managementLevel.value,
                 start_date: this.state.start_date,
                 availability: this.state.availability,
-                location: this.state.location.value,
+                location_id: this.state.location.value,
                 remote_work: this.state.remote_work,
                 relocate: this.state.relocate,
             })
         }).then(res => res.json())
         .then((data) => {
           console.log(data);
+          this.createTitleEntry(data)
+          this.createDesiredLocations(data)
+          this.createTalents(data)
           window.location.reload();
         })
         .catch(console.log)
@@ -108,7 +239,7 @@ class AddEmployeeDialog extends Component {
         this.handleEditing();
       };
 
-    createJson
+    
 
 
      
@@ -117,9 +248,7 @@ class AddEmployeeDialog extends Component {
 
   render() {
 
-    const options = [
-        { value: '2', label: 'Charleston' },
-      ]
+   
 
     return (
       <div className="content">
@@ -174,7 +303,7 @@ class AddEmployeeDialog extends Component {
                         <FormGroup>
                             <ControlLabel>Management Level</ControlLabel>
                             <Select
-                            options={[{value:1, label:'Consultant' }, {value:2, label:'Senior Consultant' }]}
+                            options={this.state.possible_levels} 
                             onChange={this.handleManagementLevel}
                             />
                         </FormGroup>
@@ -186,8 +315,8 @@ class AddEmployeeDialog extends Component {
                             <ControlLabel>Titles</ControlLabel>
                             <Select
                             isMulti
-                            options={[{value:1, label:'Software Engineer' }, {value:2, label:'Business Analyst' }]}
-                            onChange={this.handTitles}
+                            options={this.state.possible_titles}
+                            onChange={this.handleTitles}
                             />
                         </FormGroup>
                         </div>
@@ -226,7 +355,7 @@ class AddEmployeeDialog extends Component {
                         <ControlLabel>Location</ControlLabel>
                         <Select
                         
-                         options={[{value:'2', label:'Charleston' }]}
+                         options={this.state.possible_locations}
                          onChange={this.handleLocation}
                          />
                          
@@ -259,7 +388,7 @@ class AddEmployeeDialog extends Component {
                             defaultValue={[]}
                             isMulti
                             name="locations"
-                            options={[{value:'1', label:'Charleston' }, {value:'2', label:'Charleston'}]}
+                            options={this.state.possible_locations}
                             onChange={this.handDesiredLocation}
 
                         />
@@ -274,7 +403,7 @@ class AddEmployeeDialog extends Component {
                             defaultValue={[]}
                             isMulti
                             name="talents"
-                            options={[{value:'1', label:'Java' }, {value:'2', label:'Scrum' }]}
+                            options={this.state.possible_talents}
                             onChange={this.handleTalents}
                         />
                     </FormGroup>  

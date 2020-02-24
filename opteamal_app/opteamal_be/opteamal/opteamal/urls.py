@@ -9,6 +9,11 @@ router.register(r'api/employees', api.EmployeesViewSet)
 router.register(r'api/projects', api.ProjectsViewSet)
 router.register(r'api/locations', api.LocationsViewSet)
 router.register(r'api/titles', api.TitleViewSet)
+router.register(r'api/title/entry', api.TitleEntryViewSet)
+router.register(r'api/managementlevel', api.ManagementLevelViewSet)
+router.register(r'api/desiredlocations', api.DesiredLocationViewSet)
+router.register(r'api/talents', api.TalentViewSet)
+router.register(r'api/talent/entry', api.TalentEntryViewSet)
 
 
 

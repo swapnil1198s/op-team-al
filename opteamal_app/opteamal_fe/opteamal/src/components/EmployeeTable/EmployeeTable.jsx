@@ -17,10 +17,21 @@ export class EmployeeTable extends Component {
 
     let displayTitles = []
     array.forEach(element => {
-      displayTitles.push(element.title)
+      displayTitles.push(element.title_name.title)
     });
 
     return displayTitles.toString()
+
+  }
+
+  processTalents(array){
+
+    let displayTalents = []
+    array.forEach(element => {
+      displayTalents.push(element.talent_name.talent)
+    });
+
+    return displayTalents.toString()
 
   }
 
@@ -45,9 +56,10 @@ export class EmployeeTable extends Component {
           <td>{this.processTitles(employees[i].titles)}</td> 
           <td>{employees[i].start_date}</td>
           <td>{employees[i].availability}</td>
-          <td>{employees[i].location}</td>
+          <td>{employees[i].location.city_name}</td>
           <td>{employees[i].remote_work.toString()}</td>
           <td>{employees[i].relocate.toString()}</td>
+          <td>{this.processTalents(employees[i].talents)}</td>
           <td className="td-actions">
             <OverlayTrigger placement="top" overlay={edit}>
               <Button bsStyle="info" simple type="button" bsSize="xs">
