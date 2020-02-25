@@ -47,6 +47,14 @@
     .td-actions{
         min-width: 90px;
     }
+    .td-card{
+        background-color: #34ebeb;
+        display: inline-block;
+        padding: 5px;
+        border-radius: 10px;
+        -moz-border-radius: 15px;
+        margin: 5px;
+    }
 
     > tbody > tr{
         position: relative;

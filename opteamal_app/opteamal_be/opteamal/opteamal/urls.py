@@ -14,6 +14,7 @@ router.register(r'api/managementlevel', api.ManagementLevelViewSet)
 router.register(r'api/desiredlocations', api.DesiredLocationViewSet)
 router.register(r'api/talents', api.TalentViewSet)
 router.register(r'api/talent/entry', api.TalentEntryViewSet)
+router.register(r'api/project/assigned', api.AssignedEntryViewSet)
 
 
 

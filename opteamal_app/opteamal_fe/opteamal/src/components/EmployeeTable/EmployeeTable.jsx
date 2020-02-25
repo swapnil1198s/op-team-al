@@ -5,6 +5,8 @@ import Checkbox from "../CustomCheckbox/CustomCheckbox.jsx";
 import Button from "../CustomButton/CustomButton.jsx";
 
 export class EmployeeTable extends Component {
+
+  
   handleCheckbox = event => {
     const target = event.target;
     console.log(event.target);
@@ -17,10 +19,10 @@ export class EmployeeTable extends Component {
 
     let displayTitles = []
     array.forEach(element => {
-      displayTitles.push(element.title_name.title)
+      displayTitles.push(<div className="td-card">{element.title_name.title}</div>)
     });
 
-    return displayTitles.toString()
+    return displayTitles
 
   }
 
@@ -28,10 +30,10 @@ export class EmployeeTable extends Component {
 
     let displayTalents = []
     array.forEach(element => {
-      displayTalents.push(element.talent_name.talent)
+      displayTalents.push(<div className="td-card">{element.talent_name.talent}</div>)
     });
 
-    return displayTalents.toString()
+    return displayTalents
 
   }
 

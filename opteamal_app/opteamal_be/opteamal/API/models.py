@@ -9,18 +9,14 @@ class Location(models.Model):
     country = models.CharField(max_length=50)
     continent = models.CharField(max_length=50)
 
-
 class Talent(models.Model):
 
     skill = models.CharField(max_length=50)
-
-
 
 class MangementLevel(models.Model):
 
     id = models.AutoField(primary_key=True)
     level = models.CharField(max_length=20)
-
 
 class Employee(models.Model):
 
@@ -35,20 +31,25 @@ class Employee(models.Model):
     remote_work = models.BooleanField()
     relocate = models.BooleanField()
 
-
-
 class Title(models.Model):
+
     id = models.AutoField(primary_key=True)
     title = models.CharField(max_length=25)
 
 class Project(models.Model):
 
+    id = models.AutoField(primary_key=True)
     project_name = models.CharField(max_length=20)
     project_lead = models.ForeignKey(Employee, on_delete=models.CASCADE)
     location = models.ForeignKey(Location, on_delete=models.CASCADE)
     project_start  = models.DateField()
     project_due = models.DateField()
     client = models.CharField(max_length=20)
+
+class AssignedEntry(models.Model):
+
+    employee = models.ForeignKey(Employee, related_name="projects", on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
 
 
 class TitleEntry(models.Model):
@@ -61,7 +62,6 @@ class DesiredLocation(models.Model):
     id = models.AutoField(primary_key=True)
     location = models.ForeignKey(Location, related_name="locations",  on_delete=models.CASCADE)
     employee = models.ForeignKey(Employee, related_name="desired_locations", on_delete=models.CASCADE)
-
 
 class Talent(models.Model):
 

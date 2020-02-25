@@ -107,10 +107,10 @@ venv.bak/
 
 
 #pycharm
-*/.idea
+*/.idea/
 *.idea
 .idea/*
-
+*\.idea
 #node_modules
 node_modules
 node_modules/
@@ -124,4 +124,6 @@ node_modules/
 /migrations
 migrations
 *migratons
+
+.idea
 

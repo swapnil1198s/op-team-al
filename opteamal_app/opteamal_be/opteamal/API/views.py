@@ -5,7 +5,17 @@ from rest_framework.response import Response
 from rest_framework import status, viewsets
 from rest_framework.generics import ListAPIView
 
-from .models import Employee, Project, Location, Title, TitleEntry, MangementLevel, DesiredLocation, Talent, TalentEntry
+from .models import Employee,\
+                    Project,\
+                    Location,\
+                    Title,\
+                    TitleEntry,\
+                    MangementLevel,\
+                    DesiredLocation,\
+                    Talent,\
+                    TalentEntry, \
+                    AssignedEntry
+
 from .serializer import EmployeeSerializer,\
                         ProjectSerializer,\
                         LocationSerializer,\
@@ -14,7 +24,8 @@ from .serializer import EmployeeSerializer,\
                         ManagementLevelSerializer, \
                         DesiredLocationSerializer, \
                         TalentSerializer, \
-                        TalentEntrySerializer
+                        TalentEntrySerializer, \
+                        AssignedEntrySerializer
 
 
 class EmployeesViewSet(viewsets.ModelViewSet):
@@ -80,3 +91,8 @@ class TalentEntryViewSet(viewsets.ModelViewSet):
 
     queryset =  TalentEntry.objects.all()
     serializer_class = TalentEntrySerializer
+
+class AssignedEntryViewSet(viewsets.ModelViewSet):
+
+    queryset =  AssignedEntry.objects.all()
+    serializer_class = AssignedEntrySerializer

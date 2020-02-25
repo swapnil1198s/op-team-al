@@ -29,7 +29,8 @@ export class ProjectTable extends Component {
             />
           </td>
           <td>{projects[i].project_name}</td>
-          <td>{projects[i].project_lead_fname} {projects[i].project_lead_lname}</td>
+          <td>{projects[i].project_lead.f_name} {projects[i].project_lead.l_name}</td>
+          <td><div className="td-card">{projects[i].location.city_name}</div></td>
           <td>{projects[i].project_start}</td>
           <td>{projects[i].project_due}</td>
           <td>{projects[i].client}</td>

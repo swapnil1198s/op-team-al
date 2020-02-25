@@ -1,12 +1,22 @@
 from rest_framework import serializers
-from .models import Employee, Project, Title, Location, TitleEntry, MangementLevel, DesiredLocation, Talent, TalentEntry
+from .models import Employee,\
+                    Project,\
+                    Title,\
+                    Location,\
+                    TitleEntry,\
+                    MangementLevel,\
+                    DesiredLocation, \
+                    Talent, \
+                    TalentEntry, \
+                    AssignedEntry
 
 
 class TitleSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Title
-        fields = ["id","title"]
+        fields = ["id",
+                  "title"]
 
 class TitleEntrySerializer(serializers.ModelSerializer):
 
@@ -16,13 +26,20 @@ class TitleEntrySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = TitleEntry
-        fields = ["id", "employee_id" ,"title_id", "title_name",]
+        fields = ["id",
+                  "employee_id",
+                  "title_id",
+                  "title_name",]
         depth = 2
 
 class LocationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Location
-        fields = ["id","city_name", "state", "country", "continent"]
+        fields = ["id",
+                  "city_name",
+                  "state",
+                  "country",
+                  "continent"]
 
 class ManagementLevelSerializer(serializers.ModelSerializer):
     class Meta:
@@ -37,14 +54,18 @@ class DesiredLocationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = DesiredLocation
-        fields = ["id","employee_id", "location_id", "location_name",]
+        fields = ["id",
+                  "employee_id",
+                  "location_id",
+                  "location_name",]
         depth = 2
 
 class TalentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Talent
-        fields =["id", "talent"]
+        fields =["id",
+                 "talent"]
 
 class TalentEntrySerializer(serializers.ModelSerializer):
 
@@ -54,7 +75,10 @@ class TalentEntrySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = TalentEntry
-        fields = ["id", "employee_id" ,"talent_id", "talent_name",]
+        fields = ["id",
+                  "employee_id",
+                  "talent_id",
+                  "talent_name",]
 
 
 
@@ -85,35 +109,45 @@ class EmployeeSerializer(serializers.ModelSerializer):
                   'relocate',
                   'desired_locations',
                   'titles',
-                  'talents')
+                  'talents',
+                  'projects')
         depth = 2
 
-
-
-
-
-class LocationSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Location
-        fields = ["id","city_name", "state", "country", "continent"]
 
 class ManagementLevelSerializer(serializers.ModelSerializer):
     class Meta:
         model = MangementLevel
         fields = ["id","level"]
 
-
-
-
 class ProjectSerializer(serializers.ModelSerializer):
+    location_id = serializers.IntegerField(write_only=True)
+    location = LocationSerializer(read_only=True)
+    project_lead_id = serializers.IntegerField(write_only=True)
+    project_lead = EmployeeSerializer(read_only=True)
     class Meta:
         model = Project
-        fields = ('project_name','project_lead','project_lead_fname','project_lead_lname','project_start','project_due','client')
+        fields = ('id',
+                  'project_name',
+                  'project_lead_id',
+                  'project_lead',
+                  'project_start',
+                  'location_id',
+                  'location',
+                  'project_due',
+                  'client')
 
-    project_lead_fname = serializers.SerializerMethodField('get_project_leads_fname')
-    def get_project_leads_fname(self, obj):
-        return obj.project_lead.first_name
+class AssignedEntrySerializer(serializers.ModelSerializer):
 
-    project_lead_lname = serializers.SerializerMethodField('get_project_leads_lname')
-    def get_project_leads_lname(self, obj):
-        return obj.project_lead.last_name
+    employee_id = serializers.IntegerField(write_only=True)
+    employee = EmployeeSerializer(read_only=True)
+    project_id = serializers.IntegerField(write_only=True)
+    project = ProjectSerializer(read_only=True)
+
+    class Meta:
+        model = AssignedEntry
+        fields = ('id',
+                  'employee_id',
+                  'employee',
+                  'project_id',
+                  'project')
+
