@@ -31,6 +31,12 @@ cd /opteamal_app/opteamal_fe/opteamal/
 ```
 pip install -r requirements.txt
 ```
+2)Setup DEV Database
+
+```
+python manage.py makemigrations
+python manage.py migrate
+```
 
 ### Deployment
 
