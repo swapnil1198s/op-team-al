@@ -8,6 +8,7 @@ class Location(models.Model):
     state = models.CharField(max_length=50)
     country = models.CharField(max_length=50)
     continent = models.CharField(max_length=50)
+    building = models.CharField(max_length=50)
 
 class Talent(models.Model):
 
@@ -18,12 +19,18 @@ class MangementLevel(models.Model):
     id = models.AutoField(primary_key=True)
     level = models.CharField(max_length=20)
 
+class Title(models.Model):
+
+    id = models.AutoField(primary_key=True)
+    title = models.CharField(max_length=25)
+
 class Employee(models.Model):
 
     id = models.AutoField(primary_key=True)
     f_name = models.CharField(max_length=20)
     l_name = models.CharField(max_length=20)
     email = models.CharField(max_length=50)
+    title= models.ForeignKey(Title, on_delete=models.CASCADE)
     management_level = models.ForeignKey(MangementLevel, on_delete=models.CASCADE)
     start_date = models.DateField()
     availability = models.DateField()
@@ -31,10 +38,7 @@ class Employee(models.Model):
     remote_work = models.BooleanField()
     relocate = models.BooleanField()
 
-class Title(models.Model):
 
-    id = models.AutoField(primary_key=True)
-    title = models.CharField(max_length=25)
 
 class Project(models.Model):
 
@@ -72,4 +76,18 @@ class TalentEntry(models.Model):
 
     employee = models.ForeignKey(Employee, related_name="talents",  on_delete=models.CASCADE)
     talent =  models.ForeignKey(Talent, related_name="talent_name", on_delete=models.CASCADE)
+
+class EmployeeTalentView(models.Model):
+    id = models.IntegerField(primary_key=True)
+    f_name = models.CharField(max_length=20)
+    l_name = models.CharField(max_length=20)
+    title_id = models.IntegerField()
+    title = models.CharField(max_length=20)
+    talent_id = models.IntegerField()
+    talent = models.CharField(max_length=20)
+    location_id = models.IntegerField()
+
+    class Meta:
+        managed = False
+        db_table = "v_employee_talents"
 

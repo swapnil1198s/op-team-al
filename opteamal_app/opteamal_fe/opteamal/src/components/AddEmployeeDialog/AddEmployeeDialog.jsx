@@ -232,23 +232,12 @@ class AddEmployeeDialog extends Component {
         
       };
 
-
-
     handleSubmit = (e) => {
         
         this.handleEditing();
       };
 
-    
-
-
-     
-
-
-
   render() {
-
-   
 
     return (
       <div className="content">
@@ -314,7 +303,6 @@ class AddEmployeeDialog extends Component {
                         <FormGroup>
                             <ControlLabel>Titles</ControlLabel>
                             <Select
-                            isMulti
                             options={this.state.possible_titles}
                             onChange={this.handleTitles}
                             />

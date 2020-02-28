@@ -260,7 +260,7 @@ class AddProjectDialog extends Component {
 
                     <ButtonToolbar>
                         <Button onClick = {this.createProject} bsStyle="default" round fill>
-                             Add Employee
+                             Add Project
                         </Button>
                         <Button onClick={this.props.closePopup} bsStyle="default" round fill>
                              Close

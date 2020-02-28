@@ -19,7 +19,7 @@ export class EmployeeTable extends Component {
 
     let displayTitles = []
     array.forEach(element => {
-      displayTitles.push(<div className="td-card">{element.title_name.title}</div>)
+      displayTitles.push(<div className="td-card">{element.title}</div>)
     });
 
     return displayTitles
@@ -30,7 +30,7 @@ export class EmployeeTable extends Component {
 
     let displayTalents = []
     array.forEach(element => {
-      displayTalents.push(<div className="td-card">{element.talent_name.talent}</div>)
+      displayTalents.push(<div className="td-talent-card">{element.talent}</div>)
     });
 
     return displayTalents
@@ -55,7 +55,8 @@ export class EmployeeTable extends Component {
           </td>
           <td>{employees[i].f_name} {employees[i].l_name}</td>
           <td>{employees[i].email}</td>
-          <td>{this.processTitles(employees[i].titles)}</td> 
+          <td><div className="td-level-card">{employees[i].management_level.level}</div></td>
+          <td><div className="td-title-card">{employees[i].title.title}</div></td> 
           <td>{employees[i].start_date}</td>
           <td>{employees[i].availability}</td>
           <td>{employees[i].location.city_name}</td>
@@ -69,7 +70,7 @@ export class EmployeeTable extends Component {
               </Button>
             </OverlayTrigger>
             <OverlayTrigger placement="top" overlay={remove}>
-              <Button bsStyle="danger" simple type="button" bsSize="xs">
+              <Button  bsStyle="danger" simple type="button" bsSize="xs">
               <i className="material-icons">delete</i>
               </Button>
             </OverlayTrigger>

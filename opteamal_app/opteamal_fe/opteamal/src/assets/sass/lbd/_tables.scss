@@ -47,8 +47,24 @@
     .td-actions{
         min-width: 90px;
     }
-    .td-card{
-        background-color: #34ebeb;
+    .td-title-card{
+        background-color: #99ffff;
+        display: inline-block;
+        padding: 5px;
+        border-radius: 10px;
+        -moz-border-radius: 15px;
+        margin: 5px;
+    }
+    .td-talent-card{
+        background-color: #99ff99;
+        display: inline-block;
+        padding: 5px;
+        border-radius: 10px;
+        -moz-border-radius: 15px;
+        margin: 5px;
+    }
+    .td-level-card{
+        background-color: #ffff4d;
         display: inline-block;
         padding: 5px;
         border-radius: 10px;

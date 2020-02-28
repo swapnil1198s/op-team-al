@@ -83,7 +83,8 @@ class Employees extends Component {
                           <th></th>
                           <th>Name</th>
                           <th>Email</th>
-                          <th>Titles</th>
+                          <th>Management Level</th>
+                          <th>Title</th>
                           <th>Start Date</th> 
                           <th>Next Availability</th> 
                           <th>Location</th>

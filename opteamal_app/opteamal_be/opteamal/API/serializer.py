@@ -8,7 +8,8 @@ from .models import Employee,\
                     DesiredLocation, \
                     Talent, \
                     TalentEntry, \
-                    AssignedEntry
+                    AssignedEntry, \
+                    EmployeeTalentView
 
 
 class TitleSerializer(serializers.ModelSerializer):
@@ -36,6 +37,7 @@ class LocationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Location
         fields = ["id",
+                  "building",
                   "city_name",
                   "state",
                   "country",
@@ -59,6 +61,9 @@ class DesiredLocationSerializer(serializers.ModelSerializer):
                   "location_id",
                   "location_name",]
         depth = 2
+class TalentField(serializers.RelatedField):
+    def to_representation(self, Talent):
+        return 'Talent: %s ' % (Talent.talent)
 
 class TalentSerializer(serializers.ModelSerializer):
 
@@ -66,6 +71,13 @@ class TalentSerializer(serializers.ModelSerializer):
         model = Talent
         fields =["id",
                  "talent"]
+
+class TalentEntryField(serializers.RelatedField):
+    def to_representation(self, TalentEntry):
+        talent =  {"id": TalentEntry.talent.id,
+                   "talent":TalentEntry.talent.talent}
+        return talent
+
 
 class TalentEntrySerializer(serializers.ModelSerializer):
 
@@ -80,18 +92,17 @@ class TalentEntrySerializer(serializers.ModelSerializer):
                   "talent_id",
                   "talent_name",]
 
-
-
 class EmployeeSerializer(serializers.ModelSerializer):
 
-    titles = TitleEntrySerializer(many=True, read_only=True)
     id = serializers.ReadOnlyField(source="pk")
     location_id = serializers.IntegerField(write_only=True)
     location = LocationSerializer(read_only=True)
+    title_id = serializers.IntegerField(write_only=True)
+    title = TitleSerializer(read_only=True)
     management_level_id = serializers.IntegerField(write_only=True)
     management_level = ManagementLevelSerializer(read_only=True)
     desired_locations = DesiredLocationSerializer(many=True,read_only=True)
-    talents = TalentEntrySerializer(many=True,read_only=True)
+    talents = TalentEntryField(many=True, read_only=True)
 
     class Meta:
         model = Employee
@@ -108,7 +119,8 @@ class EmployeeSerializer(serializers.ModelSerializer):
                   'remote_work',
                   'relocate',
                   'desired_locations',
-                  'titles',
+                  'title_id',
+                  'title',
                   'talents',
                   'projects')
         depth = 2
@@ -151,3 +163,8 @@ class AssignedEntrySerializer(serializers.ModelSerializer):
                   'project_id',
                   'project')
 
+class EmployeeTalentsViewSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = EmployeeTalentView
+        fields =('__all__')
