@@ -24,8 +24,6 @@ class TalentResults extends Component {
     filtered_employees:[]
   }
 
-
-
   componentDidMount() {
 
     
@@ -61,7 +59,7 @@ class TalentResults extends Component {
         <Grid fluid>
         <Row>
             <Col md={12}>
-
+            
             {this.props.titles_needed.map(title => (
                 <Card
                    key={title.value}

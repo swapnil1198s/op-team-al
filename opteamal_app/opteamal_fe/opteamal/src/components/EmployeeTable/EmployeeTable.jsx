@@ -6,6 +6,14 @@ import Button from "../CustomButton/CustomButton.jsx";
 
 export class EmployeeTable extends Component {
 
+
+  constructor() {
+    super();
+    this.state = {
+      clicked_id: null,
+      showPopup: false
+    };
+  }
   
   handleCheckbox = event => {
     const target = event.target;
@@ -37,6 +45,26 @@ export class EmployeeTable extends Component {
 
   }
 
+  deleteEmployee(employee_id){
+    let url = 'http://localhost:8000/api/employees/' + employee_id;
+    fetch(url, {
+            method: 'DELETE',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            }
+        }).then(() => {
+          window.location.reload();
+        })
+        .catch(console.log)
+      }
+
+  onDeleteClick = event => {
+    const id = event.currentTarget.getAttribute("data-rowid");
+    console.log(id);
+    this.deleteEmployee(id);
+  };
+
   render() {
     const edit = <Tooltip id="edit_tooltip">Edit Employee</Tooltip>;
     const remove = <Tooltip id="remove_tooltip">Remove Employee</Tooltip>;
@@ -46,11 +74,11 @@ export class EmployeeTable extends Component {
     for (var i = 0; i < employees.length; i++) {
       number = "checkbox" + i;
       all_employee_rows.push(
-        <tr key={i}>
+        <tr key={i} >
           <td>
             <Checkbox
               number={number}
-              isChecked={i === 1 || i === 2 ? true : false}
+              isChecked={false}
             />
           </td>
           <td>{employees[i].f_name} {employees[i].l_name}</td>
@@ -70,7 +98,7 @@ export class EmployeeTable extends Component {
               </Button>
             </OverlayTrigger>
             <OverlayTrigger placement="top" overlay={remove}>
-              <Button  bsStyle="danger" simple type="button" bsSize="xs">
+              <Button data-rowid={employees[i].id} onClick={this.onDeleteClick} bsStyle="danger" simple type="button" bsSize="xs">
               <i className="material-icons">delete</i>
               </Button>
             </OverlayTrigger>
