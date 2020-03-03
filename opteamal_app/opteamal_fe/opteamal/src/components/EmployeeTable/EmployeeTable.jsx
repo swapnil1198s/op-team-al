@@ -11,7 +11,6 @@ export class EmployeeTable extends Component {
     super();
     this.state = {
       clicked_id: null,
-      showPopup: false
     };
   }
   
@@ -61,8 +60,14 @@ export class EmployeeTable extends Component {
 
   onDeleteClick = event => {
     const id = event.currentTarget.getAttribute("data-rowid");
-    console.log(id);
     this.deleteEmployee(id);
+  };
+
+  onEditClick = event => {
+
+    const id = event.currentTarget.getAttribute("data-rowid");
+    const employee = this.props.employees.filter(obj => (obj.id==id))
+    this.props.closePopup(employee);
   };
 
   render() {
@@ -93,7 +98,7 @@ export class EmployeeTable extends Component {
           <td>{this.processTalents(employees[i].talents)}</td>
           <td className="td-actions">
             <OverlayTrigger placement="top" overlay={edit}>
-              <Button bsStyle="info" simple type="button" bsSize="xs">
+              <Button data-rowid={employees[i].id} onClick={this.onEditClick} bsStyle="info" simple type="button" bsSize="xs">
               <i className="material-icons">edit</i>
               </Button>
             </OverlayTrigger>

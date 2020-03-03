@@ -15,6 +15,7 @@ import { Card } from "../components/Card/Card.jsx";
 import { EmployeeTable } from "../components/EmployeeTable/EmployeeTable.jsx"
 import Button from "../components/CustomButton/CustomButton.jsx";
 import AddEmployeeDialog from "../components/AddEmployeeDialog/AddEmployeeDialog.jsx"
+import EditEmployeeDialog from "../components/EditEmployeeDialog/EditEmployeeDialog.jsx"
 
 
 
@@ -23,23 +24,32 @@ class Employees extends Component {
   state = {
     employees: [],
     employees_count: 0,
-    showPopup: false
+    showEmployeeDialog: false,
+    showEditEmployeeDialog: false,
+    selectedEmployee: null
   }
 
-  togglePopup() {  
+  toggleAddEmployee() {  
     this.setState({  
-         showPopup: !this.state.showPopup  
-    });  
-     } 
+         showEmployeeDialog: !this.state.showEmployeeDialog  
+      });  
+    } 
 
+  toggleEditEmployee(employee) {  
+    console.log(employee)
+    if (typeof employee != "undefined" && employee != null){
+        this.setState({ selectedEmployee: employee})
+    }
+    this.setState({showEditEmployeeDialog: !this.state.showEditEmployeeDialog})
+  } 
+  
   componentDidMount() {
     const url = 'http://localhost:8000/api/employees'; 
     fetch(url)
     .then(res => res.json())
     .then((data) => {
-      this.setState({ employees: data })
+      this.setState({employees: data })
       this.setState({employees_count: this.state.employees.length})
-      console.log(data)
     })
     .catch(console.log)
   };
@@ -52,7 +62,7 @@ class Employees extends Component {
       <div className="content">
         
         <Grid fluid>
-        {!this.state.showPopup  ?
+        {!this.state.showEmployeeDialog  && !this.state.showEditEmployeeDialog ?
         <Row>
         
           <div>
@@ -60,7 +70,7 @@ class Employees extends Component {
               <Row>
                 <Col xsOffset={0} md={12}>
                   <ButtonToolbar>
-                        <Button onClick={this.togglePopup.bind(this)} bsStyle="default" round fill>Add Employee</Button>
+                        <Button onClick={this.toggleAddEmployee.bind(this)} bsStyle="default" round fill>Add Employee</Button>
                         <Button bsStyle="default" round fill>Export</Button>
                         <Button bsStyle="default" round fill>Print</Button>
                     </ButtonToolbar>
@@ -93,7 +103,7 @@ class Employees extends Component {
                           <th>Talents</th> 
                         </tr>
                     </thead>
-                      <EmployeeTable employees={this.state.employees}/>
+                      <EmployeeTable employees={this.state.employees} closePopup={this.toggleEditEmployee.bind(this)} selectedEmployeeId ={this.state.selectedEmployeeId}/>
                   </Table>
                 }
               />
@@ -103,14 +113,22 @@ class Employees extends Component {
           : null
         }
         </Grid>
-        {this.state.showPopup ?  
+        {this.state.showEmployeeDialog ?  
         <Row>
           <AddEmployeeDialog   
-            closePopup={this.togglePopup.bind(this)}  
+            closePopup={this.toggleAddEmployee.bind(this)}  
           />
         </Row>  
-: null  
-}  
+        : null  
+        }
+        {this.state.showEditEmployeeDialog ?  
+        <Row>
+          <EditEmployeeDialog   
+            closePopup={this.toggleEditEmployee.bind(this)} employee={this.state.selectedEmployee}  
+          />
+        </Row>  
+        : null  
+        }  
       </div>
     );
   }

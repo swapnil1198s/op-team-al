@@ -46,7 +46,7 @@ class LocationSerializer(serializers.ModelSerializer):
 class ManagementLevelSerializer(serializers.ModelSerializer):
     class Meta:
         model = MangementLevel
-        fields = ["level"]
+        fields = ["id","level"]
 
 class DesiredLocationSerializer(serializers.ModelSerializer):
 

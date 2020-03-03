@@ -11,13 +11,12 @@ import {
 } from "react-bootstrap";
 
 import { Card } from "../Card/Card.jsx";
-import { FormInputs } from "../FormInputs/FormInputs.jsx";
 import Button from "../CustomButton/CustomButton.jsx";
 import Select from 'react-select'
 
 
 
-class AddEmployeeDialog extends Component {
+class EditEmployeeDialog extends Component {
     constructor() {
         super();
         this.textInput = React.createRef();
@@ -38,7 +37,7 @@ class AddEmployeeDialog extends Component {
           possible_titles:[],
           possible_levels:[],
           possible_locations:[],
-          possible_talents:[]
+          possible_talents:[],
         };
     }
 
@@ -77,11 +76,31 @@ class AddEmployeeDialog extends Component {
         })
         .catch(console.log)
 
+        this.props.employee[0].talents.forEach(talent => {
+            this.state.talents.push({"value":talent.id, "label":talent.talent})
+        })
+
+        this.props.employee[0].desired_locations.forEach(location => {
+            this.state.desiredLocation.push({"value":location.id, "label":location.location_name.city_name})
+        })
+
+        this.setState({f_name:this.props.employee[0].f_name})
+        this.setState({l_name:this.props.employee[0].l_name})
+        this.setState({email:this.props.employee[0].email})
+        this.setState({start_date:this.props.employee[0].start_date})
+        this.setState({availability:this.props.employee[0].availability})
+        this.setState({titles:{"value":this.props.employee[0].title.id, "label":this.props.employee[0].title.title}})
+        this.setState({location:{"value":this.props.employee[0].location.id, "label":this.props.employee[0].location.city_name}})
+        this.setState({managementLevel:{"value":this.props.employee[0].management_level.id, "label":this.props.employee[0].management_level.level}})
+        this.setState({remote_work:this.props.employee[0].remote_work})
+        this.setState({relocate:this.props.employee[0].relocate})
+
+
+
       };
 
-
-    handleRelocation = (selectedOption) => {
-        this.setState({relocate:selectedOption.value});
+    handleRelocation = (selection) => {
+        this.setState({relocate:selection.value});
       }
 
     handleText() {
@@ -116,11 +135,11 @@ class AddEmployeeDialog extends Component {
         this.setState({desiredLocation})
     }
 
+
+
     createDesiredLocations = (employee) => {
 
         this.state.desiredLocation.forEach(function(location) {
-            console.log(location.label);
-            console.log(employee.id)
            
             fetch('http://localhost:8000/api/desiredlocations/', {
                 method: 'POST',
@@ -142,8 +161,6 @@ class AddEmployeeDialog extends Component {
     createTalents = (employee) => {
 
         this.state.talents.forEach(function(talent) {
-            console.log(talent.label);
-            console.log(employee.id)
            
             fetch('http://localhost:8000/api/talent/entry/', {
                 method: 'POST',
@@ -155,24 +172,27 @@ class AddEmployeeDialog extends Component {
                     employee_id: employee.id,
                     talent_id : talent.value
                 })
-            }).then(res => res.json()).catch(console.log)
-        
+            }).then(res => res.json())
+            .then((data) => {
+            console.log(data);
+            })
+            .catch(console.log)
             
         });
 
     }
 
-    createEmployee = () => {
+    saveEmployee = () => {
 
-        const talentsArr = []
-        const desiredLocationArr = []
-        const titlesArr = []
-        this.state.talents.forEach(item => talentsArr.push(item.value));
-        this.state.desiredLocation.forEach(item => desiredLocationArr.push(item.value));
-    
+        //const talentsArr = []
+        //const desiredLocationArr = []
+        //const titlesArr = []
+        //this.state.talents.forEach(item => talentsArr.push(item.value));
+        //this.state.desiredLocation.forEach(item => desiredLocationArr.push(item.value));
+       
 
-        fetch('http://localhost:8000/api/employees/', {
-            method: 'POST',
+        fetch('http://localhost:8000/api/employees/'+this.props.employee[0].id + '/', {
+            method: 'PUT',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
@@ -187,11 +207,11 @@ class AddEmployeeDialog extends Component {
                 location_id: this.state.location.value,
                 remote_work: this.state.remote_work,
                 relocate: this.state.relocate,
-                title_id:this.state.titles.value
+                title_id:this.state.location.value
             })
         }).then(res => res.json())
         .then((data) => {
-          
+          console.log(data);
           this.createDesiredLocations(data)
           this.createTalents(data)
           window.location.reload();
@@ -200,7 +220,8 @@ class AddEmployeeDialog extends Component {
         
       };
 
-    handleSubmit = (e) => {    
+    handleSubmit = (e) => {
+        
         this.handleEditing();
       };
 
@@ -212,7 +233,7 @@ class AddEmployeeDialog extends Component {
           <Row>
             <Col xsOffset={4} md={4}>
               <Card
-                title="Add Employee"
+                title="Edit Employee"
                 content={
                   <form>
                    <Row>
@@ -221,8 +242,8 @@ class AddEmployeeDialog extends Component {
                             <ControlLabel>First Name</ControlLabel>
                             <FormControl 
                                 type="text"
-                                placeholder= "First Name"
-                                defaultValue= ""
+                                placeholder= {this.props.employee[0].f_name}
+                                defaultValue= {this.props.employee[0].f_name}
                                 inputRef={(ref) => {this.first_name = ref}}
                                 onChange={() => this.handleText()}
                             />
@@ -234,8 +255,8 @@ class AddEmployeeDialog extends Component {
                         <ControlLabel>Last Name</ControlLabel>
                             <FormControl 
                                 type="text"
-                                placeholder= "Last Name"
-                                defaultValue= ""
+                                placeholder= {this.props.employee[0].l_name}
+                                defaultValue= {this.props.employee[0].l_name}
                                 inputRef={(ref) => {this.last_name = ref}}
                                 onChange={() => this.handleText()}
                             />
@@ -249,7 +270,7 @@ class AddEmployeeDialog extends Component {
                             <FormControl 
                                 type="email"
                                 placeholder= "Email"
-                                defaultValue= ""
+                                defaultValue= {this.props.employee[0].email}
                                 inputRef={(ref) => {this.email = ref}}
                                 onChange={() => this.handleText()}
                             />
@@ -261,6 +282,7 @@ class AddEmployeeDialog extends Component {
                             <Select
                             options={this.state.possible_levels} 
                             onChange={this.handleManagementLevel}
+                            value={this.state.managementLevel}
                             />
                         </FormGroup>
                         </div>
@@ -272,6 +294,7 @@ class AddEmployeeDialog extends Component {
                             <Select
                             options={this.state.possible_titles}
                             onChange={this.handleTitles}
+                            value={this.state.titles}
                             />
                         </FormGroup>
                         </div>
@@ -284,7 +307,7 @@ class AddEmployeeDialog extends Component {
                             <FormControl 
                                 type="date"
                                 placeholder= "Start Date"
-                                defaultValue= ""
+                                defaultValue= {this.props.employee[0].start_date}
                                 inputRef={(ref) => {this.start_date = ref}}
                                 onChange={() => this.handleText()}
                             />
@@ -296,7 +319,7 @@ class AddEmployeeDialog extends Component {
                             <FormControl 
                                 type="date"
                                 placeholder= "Start Date"
-                                defaultValue= ""
+                                defaultValue= {this.props.employee[0].availability}
                                 inputRef={(ref) => {this.availability = ref}}
                                 onChange={() => this.handleText()}
                             />
@@ -309,9 +332,10 @@ class AddEmployeeDialog extends Component {
                     <FormGroup className="col-md-4">
                         <ControlLabel>Location</ControlLabel>
                         <Select
-                        
-                         options={this.state.possible_locations}
-                         onChange={this.handleLocation}
+                            options={this.state.possible_locations}
+                            onChange={this.handleLocation}
+                            value={this.state.location}
+                    
                          />
                          
                      </FormGroup>
@@ -319,16 +343,18 @@ class AddEmployeeDialog extends Component {
                      <FormGroup className="col-md-4">
                         <ControlLabel>Remote Work?</ControlLabel>
                         <Select
-                            options={[{value:true, label:'Yes' }, {value:false, label:'No' }]}
+                            options={[{value:true, label:'true' }, {value:false, label:'false' }]}
                             onChange={this.handleRemoteWork}
+                            value={this.state.remote_work}
                         />
                     </FormGroup>
 
                      <FormGroup className="col-md-4">
                         <ControlLabel>Relocation Possible?</ControlLabel>
                         <Select
-                            options={[{value:true, label:'Yes' }, {value:false, label:'No' }]}
+                            options={[{value:true, label:'true' }, {value:false, label:'false' }]}
                             onChange={this.handleRelocation}
+                            value={this.state.relocate}
                         />
                     </FormGroup> 
  
@@ -344,6 +370,7 @@ class AddEmployeeDialog extends Component {
                             isMulti
                             name="locations"
                             options={this.state.possible_locations}
+                            value={this.state.desiredLocation}
                             onChange={this.handDesiredLocation}
 
                         />
@@ -360,14 +387,15 @@ class AddEmployeeDialog extends Component {
                             name="talents"
                             options={this.state.possible_talents}
                             onChange={this.handleTalents}
+                            value={this.state.talents}
                         />
                     </FormGroup>  
 
                     </Row>
 
                     <ButtonToolbar>
-                        <Button onClick = {this.createEmployee} bsStyle="default" round fill>
-                             Add Employee
+                        <Button onClick = {this.props.closePopup} bsStyle="default" round fill>
+                             Save Employee
                         </Button>
                         <Button onClick={this.props.closePopup} bsStyle="default" round fill>
                              Close
@@ -385,4 +413,4 @@ class AddEmployeeDialog extends Component {
   }
 }
 
-export default AddEmployeeDialog;
+export default EditEmployeeDialog;
