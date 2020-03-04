@@ -12,6 +12,7 @@ import { Card } from "../components/Card/Card.jsx";
 import Button from "../components/CustomButton/CustomButton.jsx";
 import ProjectTable from "../components/ProjectTable/ProjectTable.jsx";
 import AddProjectDialog from "../components/AddProjectDialog/AddProjectDialog.jsx"
+import EditProjectDialog from "../components/EditProjectDialog/EditProjectDialog.jsx"
 import DeleteProjectDialog from "../components/DeleteProjectDialog/DeleteProjectDialog.jsx"
 
 class Projects extends Component {
@@ -20,6 +21,7 @@ class Projects extends Component {
     projects: [],
     projects_count: 0,
     showPopup: false,
+    showEditProjectDialog: false,
     showDeleteProjectDialog: false
   }
 
@@ -29,6 +31,15 @@ class Projects extends Component {
          showPopup: !this.state.showPopup  
     });  
      } 
+
+
+     toggleEditProject(project) {  
+      console.log(project)
+      if (typeof project != "undefined" && project != null){
+          this.setState({ selectedProject: project})
+      }
+      this.setState({showEditProjectDialog: !this.state.showEditProjectDialog})
+    }
 
   toggleDeleteProject(project) {  
     console.log(project)
@@ -52,7 +63,7 @@ class Projects extends Component {
     return (
       <div className="content">
         <Grid fluid>
-        {!this.state.showPopup && !this.state.showDeleteProjectDialog  ?  
+        {!this.state.showPopup && !this.state.showEditProjectDialog && !this.state.showDeleteProjectDialog  ?  
         <Row>
         <div>
             <Col md={12}>
@@ -88,7 +99,7 @@ class Projects extends Component {
                         <th>Client</th>   
                       </tr>
                   </thead>
-                    <ProjectTable projects={this.state.projects} closePopupDel={this.toggleDeleteProject.bind(this)} selectedProjectId ={this.state.selectedProjectId}/>
+                    <ProjectTable projects={this.state.projects} closePopupEdit={this.toggleEditProject.bind(this)} closePopupDel={this.toggleDeleteProject.bind(this)} selectedProjectId ={this.state.selectedProjectId}/>
                 </Table>
                 }
               />
@@ -105,6 +116,14 @@ class Projects extends Component {
         </Row>  
         : null  
         }  
+        {this.state.showEditProjectDialog ?  
+        <Row>
+          <EditProjectDialog   
+            closePopup={this.toggleEditProject.bind(this)} project={this.state.selectedProject}  
+          />
+        </Row>  
+        : null  
+        } 
       {this.state.showDeleteProjectDialog ?  
         <Row>
           <DeleteProjectDialog   
