@@ -12,13 +12,15 @@ import { Card } from "../components/Card/Card.jsx";
 import Button from "../components/CustomButton/CustomButton.jsx";
 import ProjectTable from "../components/ProjectTable/ProjectTable.jsx";
 import AddProjectDialog from "../components/AddProjectDialog/AddProjectDialog.jsx"
+import DeleteProjectDialog from "../components/DeleteProjectDialog/DeleteProjectDialog.jsx"
 
 class Projects extends Component {
 
   state = {
     projects: [],
     projects_count: 0,
-    showPopup: false
+    showPopup: false,
+    showDeleteProjectDialog: false
   }
 
 
@@ -27,6 +29,14 @@ class Projects extends Component {
          showPopup: !this.state.showPopup  
     });  
      } 
+
+  toggleDeleteProject(project) {  
+    console.log(project)
+    if (typeof project != "undefined" && project != null){
+        this.setState({ selectedProject: project})
+    }
+    this.setState({showDeleteProjectDialog: !this.state.showDeleteProjectDialog})
+  } 
 
   componentDidMount() {
     const url = 'http://localhost:8000/api/projects'; 
@@ -42,7 +52,7 @@ class Projects extends Component {
     return (
       <div className="content">
         <Grid fluid>
-        {!this.state.showPopup  ?  
+        {!this.state.showPopup && !this.state.showDeleteProjectDialog  ?  
         <Row>
         <div>
             <Col md={12}>
@@ -78,7 +88,7 @@ class Projects extends Component {
                         <th>Client</th>   
                       </tr>
                   </thead>
-                    <ProjectTable projects={this.state.projects}/>
+                    <ProjectTable projects={this.state.projects} closePopup={this.toggleDeleteProject.bind(this)} selectedProjectId ={this.state.selectedProjectId}/>
                 </Table>
                 }
               />
@@ -93,8 +103,16 @@ class Projects extends Component {
             closePopup={this.togglePopup.bind(this)}  
           />
         </Row>  
-: null  
-}  
+        : null  
+        }  
+      {this.state.showDeleteProjectDialog ?  
+        <Row>
+          <DeleteProjectDialog   
+            closePopup={this.toggleDeleteProject.bind(this)} employee={this.state.selectedEmployee}  
+          />
+        </Row>  
+        : null  
+        } 
       </div>
     );
   }

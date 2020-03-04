@@ -12,6 +12,13 @@ export class ProjectTable extends Component {
       [target.name]: target.checked
     });
   };
+
+  onDeleteClick = event => {
+    const id = event.currentTarget.getAttribute("data-rowid");
+    const project = this.props.projects.filter(obj => (obj.id==id))
+    this.props.closePopup(project);
+  };
+
   render() {
     const edit = <Tooltip id="edit_tooltip">Edit Project</Tooltip>;
     const remove = <Tooltip id="remove_tooltip">Remove Project</Tooltip>;
@@ -41,7 +48,7 @@ export class ProjectTable extends Component {
               </Button>
             </OverlayTrigger>
             <OverlayTrigger placement="top" overlay={remove}>
-              <Button bsStyle="danger" simple type="button" bsSize="xs">
+              <Button data-rowid={projects[i].id} onClick={this.onDeleteClick} bsStyle="danger" simple type="button" bsSize="xs">
               <i className="material-icons">delete</i>
               </Button>
             </OverlayTrigger>

@@ -44,30 +44,17 @@ export class EmployeeTable extends Component {
 
   }
 
-  deleteEmployee(employee_id){
-    let url = 'http://localhost:8000/api/employees/' + employee_id;
-    fetch(url, {
-            method: 'DELETE',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-            }
-        }).then(() => {
-          window.location.reload();
-        })
-        .catch(console.log)
-      }
-
   onDeleteClick = event => {
     const id = event.currentTarget.getAttribute("data-rowid");
-    this.deleteEmployee(id);
+    const employee = this.props.employees.filter(obj => (obj.id==id))
+    this.props.closePopupDel(employee);
   };
 
   onEditClick = event => {
 
     const id = event.currentTarget.getAttribute("data-rowid");
     const employee = this.props.employees.filter(obj => (obj.id==id))
-    this.props.closePopup(employee);
+    this.props.closePopupEdit(employee);
   };
 
   render() {

@@ -16,6 +16,7 @@ import { EmployeeTable } from "../components/EmployeeTable/EmployeeTable.jsx"
 import Button from "../components/CustomButton/CustomButton.jsx";
 import AddEmployeeDialog from "../components/AddEmployeeDialog/AddEmployeeDialog.jsx"
 import EditEmployeeDialog from "../components/EditEmployeeDialog/EditEmployeeDialog.jsx"
+import DeleteEmployeeDialog from "../components/DeleteEmployeeDialog/DeleteEmployeeDialog.jsx"
 
 
 
@@ -26,6 +27,7 @@ class Employees extends Component {
     employees_count: 0,
     showEmployeeDialog: false,
     showEditEmployeeDialog: false,
+    showDeleteEmployeePopup: false,
     selectedEmployee: null
   }
 
@@ -41,6 +43,14 @@ class Employees extends Component {
         this.setState({ selectedEmployee: employee})
     }
     this.setState({showEditEmployeeDialog: !this.state.showEditEmployeeDialog})
+  } 
+
+  toggleDeleteEmployee(employee) {  
+    console.log(employee)
+    if (typeof employee != "undefined" && employee != null){
+        this.setState({ selectedEmployee: employee})
+    }
+    this.setState({showDeleteEmployeePopup: !this.state.showDeleteEmployeePopup})
   } 
   
   componentDidMount() {
@@ -62,7 +72,7 @@ class Employees extends Component {
       <div className="content">
         
         <Grid fluid>
-        {!this.state.showEmployeeDialog  && !this.state.showEditEmployeeDialog ?
+        {!this.state.showEmployeeDialog  && !this.state.showEditEmployeeDialog && !this.state.showDeleteEmployeePopup ?
         <Row>
         
           <div>
@@ -103,7 +113,7 @@ class Employees extends Component {
                           <th>Talents</th> 
                         </tr>
                     </thead>
-                      <EmployeeTable employees={this.state.employees} closePopup={this.toggleEditEmployee.bind(this)} selectedEmployeeId ={this.state.selectedEmployeeId}/>
+                      <EmployeeTable employees={this.state.employees} closePopupEdit={this.toggleEditEmployee.bind(this)} selectedEmployeeId ={this.state.selectedEmployeeId} closePopupDel={this.toggleDeleteEmployee.bind(this)} selectedEmployeeId ={this.state.selectedEmployeeId}/>
                   </Table>
                 }
               />
@@ -128,7 +138,15 @@ class Employees extends Component {
           />
         </Row>  
         : null  
-        }  
+        }
+        {this.state.showDeleteEmployeePopup ?  
+        <Row>
+          <DeleteEmployeeDialog   
+            closePopup={this.toggleDeleteEmployee.bind(this)} employee={this.state.selectedEmployee}  
+          />
+        </Row>  
+        : null  
+        }    
       </div>
     );
   }
