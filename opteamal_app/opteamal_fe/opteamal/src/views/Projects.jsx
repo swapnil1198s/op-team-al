@@ -88,7 +88,7 @@ class Projects extends Component {
                         <th>Client</th>   
                       </tr>
                   </thead>
-                    <ProjectTable projects={this.state.projects} closePopup={this.toggleDeleteProject.bind(this)} selectedProjectId ={this.state.selectedProjectId}/>
+                    <ProjectTable projects={this.state.projects} closePopupDel={this.toggleDeleteProject.bind(this)} selectedProjectId ={this.state.selectedProjectId}/>
                 </Table>
                 }
               />
@@ -108,7 +108,7 @@ class Projects extends Component {
       {this.state.showDeleteProjectDialog ?  
         <Row>
           <DeleteProjectDialog   
-            closePopup={this.toggleDeleteProject.bind(this)} employee={this.state.selectedEmployee}  
+            closePopup={this.toggleDeleteProject.bind(this)} project={this.state.selectedProject}  
           />
         </Row>  
         : null  

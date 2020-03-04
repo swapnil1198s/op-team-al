@@ -16,7 +16,7 @@ export class ProjectTable extends Component {
   onDeleteClick = event => {
     const id = event.currentTarget.getAttribute("data-rowid");
     const project = this.props.projects.filter(obj => (obj.id==id))
-    this.props.closePopup(project);
+    this.props.closePopupDel(project);
   };
 
   render() {
