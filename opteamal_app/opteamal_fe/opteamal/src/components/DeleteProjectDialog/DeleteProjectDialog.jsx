@@ -40,12 +40,8 @@ class DeleteProjectDialog extends Component {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({
-                project_name: this.state.project_name
-            })
-        }).then(res => res.json())
-        .then((data) => {
-          console.log(data);
+        })
+        .then(() => {
           window.location.reload();
         })
         .catch(console.log)
