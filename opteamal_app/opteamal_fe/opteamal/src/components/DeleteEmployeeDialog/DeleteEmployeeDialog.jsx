@@ -32,7 +32,7 @@ class DeleteEmployeeDialog extends Component {
         this.setState({f_name:this.props.employee[0].f_name})
         this.setState({l_name:this.props.employee[0].l_name})
 
-      };
+      }
 
     deleteEmployee = () => {
 
@@ -41,18 +41,12 @@ class DeleteEmployeeDialog extends Component {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                f_name: this.state.f_name,
-                l_name: this.state.l_name
-            })
-        }).then(res => res.json())
-        .then((data) => {
-          console.log(data);
+            }
+        })
+        .then(() => {
           window.location.reload();
         })
         .catch(console.log)
-        
       };
 
     handleSubmit = (e) => {
@@ -72,7 +66,7 @@ class DeleteEmployeeDialog extends Component {
                 content={
                   <form>
                    <ButtonToolbar>
-                        <Button onClick = {this.deleteEmployee} bsStyle="default" round fill>
+                        <Button onClick = {this.deleteEmployee} type="button" bsStyle="default" round fill>
                              Yes
                         </Button>
                         <Button onClick={this.props.closePopup} bsStyle="default" round fill>
