@@ -212,7 +212,9 @@ class AddEmployeeDialog extends Component {
             errors.push("First or last name is empty");
         }
         
-        if ((email.split("").filter(x => x == "@").length !== 1) || (email.indexOf(".") == -1)) {
+        if (email.length == 0){
+            errors.push("Email is empty");
+        }else if ((email.split("").filter(x => x == "@").length !== 1) || (email.indexOf(".") == -1)) {
             errors.push("Email is invalid");
         }
         
