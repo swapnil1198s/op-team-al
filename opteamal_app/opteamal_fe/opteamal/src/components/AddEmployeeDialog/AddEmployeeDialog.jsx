@@ -14,6 +14,7 @@ import { Card } from "../Card/Card.jsx";
 import { FormInputs } from "../FormInputs/FormInputs.jsx";
 import Button from "../CustomButton/CustomButton.jsx";
 import Select from 'react-select'
+import Icon from '@material-ui/core/Icon';
 
 
 
@@ -22,13 +23,14 @@ class AddEmployeeDialog extends Component {
         super();
         this.textInput = React.createRef();
         this.state = {
+          
           selectedOption: '',
           relocate: false,   
           f_name:"",
           l_name:"",
           email:"",
-          start_date:"1/1/2020",
-          availability:"1/1/2030",
+          start_date:"1/1/1950",
+          availability:"1/1/2150",
           location:0,
           remote_work:false,
           titles:[],
@@ -38,8 +40,10 @@ class AddEmployeeDialog extends Component {
           possible_titles:[],
           possible_levels:[],
           possible_locations:[],
-          possible_talents:[]
+          possible_talents:[],
+          errors:[]
         };
+        this.handleSubmit = this.handleSubmit.bind(this);
     }
 
 
@@ -162,7 +166,7 @@ class AddEmployeeDialog extends Component {
 
     }
 
-    createEmployee = () => {
+    createEmployee() {
 
         const talentsArr = []
         const desiredLocationArr = []
@@ -200,17 +204,71 @@ class AddEmployeeDialog extends Component {
         
       };
 
+
+      handleValidation(f_name,l_name,email,titles,start_date,availability,location,managementLevel){
+        const errors = [];
+
+        if ((f_name.length == 0) || (l_name.length == 0)){
+            errors.push("Missing first or last name");
+        }
+        
+        if ((email.split("").filter(x => x == "@").length !== 1) || (email.indexOf(".") == -1)) {
+            errors.push("Invalid email");
+        }
+        
+        if (titles == 0){
+            errors.push("Title not selected")
+        }
+
+        if (managementLevel == 0){
+            errors.push("Management level not selected")
+        }
+
+        if (start_date == "1/1/1950" || Date.parse(start_date) != Date.parse(start_date)){
+            errors.push("Start date not selected")
+        }
+
+        if (availability == "1/1/2150" || Date.parse(availability) != Date.parse(availability)){
+            errors.push("Availability not selected")
+        }
+
+        if (Date.parse(start_date) > Date.parse(availability)){
+            errors.push("Start date can't be after next available date")
+        }
+
+        if (location == 0){
+            errors.push("Location not selected")
+        }
+
+        return errors;
+    }
+
     handleSubmit = (e) => {    
-        this.handleEditing();
-      };
+        e.preventDefault();
+
+        const { f_name, l_name, email, titles, start_date, availability, location, managementLevel } = this.state;
+
+        const errors = this.handleValidation(f_name, l_name, email, titles, start_date, availability, location, managementLevel);
+        if (errors.length > 0) {
+            this.setState({ errors });
+            return;
+        }else{
+            this.createEmployee();
+        }
+    };
+
+    
 
   render() {
-
+    const {errors} = this.state;
     return (
       <div className="content">
         <Grid fluid>
           <Row>
             <Col xsOffset={4} md={4}>
+              {errors.map(error => (
+                <p key={error}><i class="material-icons">close</i> {error}</p>
+                ))}
               <Card
                 title="Add Employee"
                 content={
@@ -366,7 +424,7 @@ class AddEmployeeDialog extends Component {
                     </Row>
 
                     <ButtonToolbar>
-                        <Button onClick = {this.createEmployee} bsStyle="default" round fill>
+                        <Button onClick = {this.handleSubmit} bsStyle="default" round fill>
                              Add Employee
                         </Button>
                         <Button onClick={this.props.closePopup} bsStyle="default" round fill>
