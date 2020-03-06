@@ -30,8 +30,9 @@ export class ResultTable extends Component {
   filterByTalent(employee_talents){
     let result = false
     let talents_needed = this.props.talents_needed
+    
     employee_talents.forEach(talent => {
-        if(talents_needed.some(item => item.value === talent.id)){
+        if(talents_needed.some(item => item.value === talent.talent_id)){
             result = true
         };
       });
@@ -50,12 +51,7 @@ export class ResultTable extends Component {
       if(this.filterByTalent(employees[i].talents)){
             all_employee_rows.push(
                         <tr key={i}>
-                        <td>
-                        <Checkbox
-                            number={number}
-                            isChecked={i === 1 || i === 2 ? true : false}
-                        />
-                        </td>
+                        <td></td>
                         <td>{employees[i].f_name} {employees[i].l_name}</td>
                         <td>{employees[i].email}</td>
                         <td><div className="td-level-card">{employees[i].management_level.level}</div></td>

@@ -4,8 +4,6 @@ from rest_framework import status, viewsets, filters as rff
 from django_filters.rest_framework import DjangoFilterBackend, filters, ModelChoiceFilter
 import django_filters as df
 
-
-
 from .models import Employee,\
                     Project,\
                     Location,\

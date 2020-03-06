@@ -77,11 +77,11 @@ class EditEmployeeDialog extends Component {
         .catch(console.log)
 
         this.props.employee[0].talents.forEach(talent => {
-            this.state.talents.push({"value":talent.id, "label":talent.talent})
+            this.state.talents.push({"value":talent.talent_id, "label":talent.talent})
         })
 
         this.props.employee[0].desired_locations.forEach(location => {
-            this.state.desiredLocation.push({"value":location.id, "label":location.location_name.city_name})
+            this.state.desiredLocation.push({"value":location.location_name.id, "label":location.location_name.city_name})
         })
 
         this.setState({f_name:this.props.employee[0].f_name})
@@ -92,15 +92,15 @@ class EditEmployeeDialog extends Component {
         this.setState({titles:{"value":this.props.employee[0].title.id, "label":this.props.employee[0].title.title}})
         this.setState({location:{"value":this.props.employee[0].location.id, "label":this.props.employee[0].location.city_name}})
         this.setState({managementLevel:{"value":this.props.employee[0].management_level.id, "label":this.props.employee[0].management_level.level}})
-        this.setState({remote_work:this.props.employee[0].remote_work})
-        this.setState({relocate:this.props.employee[0].relocate})
+        this.setState({remote_work:{"value":this.props.employee[0].remote_work,"label":this.props.employee[0].remote_work.toString()}})
+        this.setState({relocate:{"value":this.props.employee[0].relocate,"label":this.props.employee[0].relocate.toString()}})
 
 
 
       };
 
-    handleRelocation = (selection) => {
-        this.setState({relocate:selection.value});
+    handleRelocation = (relocate) => {
+        this.setState({relocate});
       }
 
     handleText() {
@@ -120,7 +120,7 @@ class EditEmployeeDialog extends Component {
      }
 
      handleRemoteWork = (remote_work) => {
-         this.setState({remote_work:remote_work.value})
+         this.setState({remote_work})
      }
 
      handleTitles = (titles) => {
@@ -135,12 +135,49 @@ class EditEmployeeDialog extends Component {
         this.setState({desiredLocation})
     }
 
-
-
     createDesiredLocations = (employee) => {
 
-        this.state.desiredLocation.forEach(function(location) {
-           
+        const new_locations = this.state.desiredLocation
+        const current_locations = this.props.employee[0].desired_locations
+        let add_locations = []
+        let delete_locations= []
+        let already_exist = false
+        let not_deleted = false
+
+        
+        new_locations.forEach(function(new_location){
+            
+            already_exist = false
+            current_locations.forEach(function(old_location){
+                console.log("LOG: " + new_location.value + ' ' + old_location.location_name.id)
+                if(new_location.value == old_location.location_name.id){
+                    already_exist = true   
+                }
+            });
+            if(!already_exist){
+                add_locations.push(new_location)
+            }    
+        });
+        
+
+        current_locations.forEach(function(old_location){
+            not_deleted = false
+            new_locations.forEach(function(new_location){
+                if(new_location.value == old_location.location_name.id){
+                    not_deleted = true               
+                }
+            });
+            if(!not_deleted){
+                delete_locations.push(old_location)
+            } 
+
+        });
+        
+        console.log(delete_locations)
+        console.log(add_locations)
+        
+        
+        for (var i = 0; i < add_locations.length; i++) {
             fetch('http://localhost:8000/api/desiredlocations/', {
                 method: 'POST',
                 headers: {
@@ -149,19 +186,70 @@ class EditEmployeeDialog extends Component {
                 },
                 body: JSON.stringify({
                     employee_id: employee.id,
-                    location_id : location.value
+                    location_id : add_locations[i].value
                 })
             }).then(res => res.json()).catch(console.log)
+
+       }
+
+       for (var i = 0; i < delete_locations.length; i++) {
+
+            fetch('http://localhost:8000/api/desiredlocations/'+ delete_locations[i].id, {
+                method: 'DELETE',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                } 
+            }).then().catch(console.log)
+
+        }
         
-            
-        });
 
     }
 
     createTalents = (employee) => {
+        
+        const new_talents = this.state.talents
+        const current_talents = this.props.employee[0].talents
+        let add_talents = []
+        let delete_talents = []
+        let already_exist = false
+        let not_deleted = false
 
-        this.state.talents.forEach(function(talent) {
-           
+        
+        new_talents.forEach(function(new_talent){
+            
+            already_exist = false
+            current_talents.forEach(function(old_talent){
+                if(new_talent.value == old_talent.talent_id){
+                    already_exist = true
+                    
+                }
+            });
+            if(!already_exist){
+                add_talents.push(new_talent)
+            }    
+        });
+
+        current_talents.forEach(function(old_talent){
+
+            not_deleted = false
+            new_talents.forEach(function(new_talent){
+                if(new_talent.value == old_talent.talent_id){
+                    not_deleted = true               
+                }
+            });
+            if(!not_deleted){
+                delete_talents.push(old_talent)
+            } 
+
+        });
+
+        console.log(delete_talents)
+        console.log(add_talents)
+
+        
+        for (var i = 0; i < add_talents.length; i++) {
             fetch('http://localhost:8000/api/talent/entry/', {
                 method: 'POST',
                 headers: {
@@ -170,26 +258,33 @@ class EditEmployeeDialog extends Component {
                 },
                 body: JSON.stringify({
                     employee_id: employee.id,
-                    talent_id : talent.value
+                    talent_id : add_talents[i].value
                 })
             }).then(res => res.json())
             .then((data) => {
-            console.log(data);
-            })
-            .catch(console.log)
-            
-        });
+                console.log(data)
+            }).catch(console.log)
 
+       }
+
+
+       for (var i = 0; i < delete_talents.length; i++) {
+
+            fetch('http://localhost:8000/api/talent/entry/'+ delete_talents[i].id, {
+                method: 'DELETE',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                } 
+            }).then().catch(console.log)
+
+        }
+    
     }
+
 
     saveEmployee = () => {
 
-        //const talentsArr = []
-        //const desiredLocationArr = []
-        //const titlesArr = []
-        //this.state.talents.forEach(item => talentsArr.push(item.value));
-        //this.state.desiredLocation.forEach(item => desiredLocationArr.push(item.value));
-       
 
         fetch('http://localhost:8000/api/employees/'+this.props.employee[0].id + '/', {
             method: 'PUT',
@@ -205,15 +300,16 @@ class EditEmployeeDialog extends Component {
                 start_date: this.state.start_date,
                 availability: this.state.availability,
                 location_id: this.state.location.value,
-                remote_work: this.state.remote_work,
-                relocate: this.state.relocate,
+                remote_work: this.state.remote_work.value,
+                relocate: this.state.relocate.value,
                 title_id:this.state.location.value
             })
+        
         }).then(res => res.json())
         .then((data) => {
           console.log(data);
-          this.createDesiredLocations(data)
           this.createTalents(data)
+          this.createDesiredLocations(data)
           window.location.reload();
         })
         .catch(console.log)
@@ -394,7 +490,7 @@ class EditEmployeeDialog extends Component {
                     </Row>
 
                     <ButtonToolbar>
-                        <Button onClick = {this.props.closePopup} bsStyle="default" round fill>
+                        <Button onClick = {this.saveEmployee} bsStyle="default" round fill>
                              Save Employee
                         </Button>
                         <Button onClick={this.props.closePopup} bsStyle="default" round fill>

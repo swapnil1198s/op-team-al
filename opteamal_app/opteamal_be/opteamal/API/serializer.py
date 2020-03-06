@@ -74,7 +74,8 @@ class TalentSerializer(serializers.ModelSerializer):
 
 class TalentEntryField(serializers.RelatedField):
     def to_representation(self, TalentEntry):
-        talent =  {"id": TalentEntry.talent.id,
+        talent =  {"id":TalentEntry.id,
+                   "talent_id": TalentEntry.talent.id,
                    "talent":TalentEntry.talent.talent}
         return talent
 

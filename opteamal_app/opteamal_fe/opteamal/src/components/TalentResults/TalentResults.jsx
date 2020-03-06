@@ -44,15 +44,13 @@ class TalentResults extends Component {
     .then((data) => {
       this.setState({ employees: data })
       this.setState({employees_count: this.state.employees.length})
-      console.log(data) 
+      //console.log(data) 
     })
     .catch(console.log)
     
   };
   
   render() {
-    const edit = <Tooltip id="edit_tooltip">Edit Employee</Tooltip>;
-    const remove = <Tooltip id="remove_tooltip">Delete Employee</Tooltip>;
     return (
       <div className="content">
         

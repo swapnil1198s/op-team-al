@@ -41,16 +41,8 @@ class DeleteEmployeeDialog extends Component {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                f_name: this.state.f_name,
-                l_name: this.state.l_name
-            })
+            }
         }).then(res => res.json())
-        .then((data) => {
-          console.log(data);
-          window.location.reload();
-        })
         .catch(console.log)
         
       };
