@@ -132,11 +132,28 @@ class ManagementLevelSerializer(serializers.ModelSerializer):
         model = MangementLevel
         fields = ["id","level"]
 
+
+class AssignedEntrySerializer(serializers.ModelSerializer):
+
+    employee_id = serializers.IntegerField(write_only=True)
+    employee = EmployeeSerializer(read_only=True)
+    project_id = serializers.IntegerField(write_only=True)
+
+
+    class Meta:
+        model = AssignedEntry
+        fields = ('id',
+                  'employee_id',
+                  'employee',
+                  'project_id',
+                  )
+
 class ProjectSerializer(serializers.ModelSerializer):
     location_id = serializers.IntegerField(write_only=True)
     location = LocationSerializer(read_only=True)
     project_lead_id = serializers.IntegerField(write_only=True)
     project_lead = EmployeeSerializer(read_only=True)
+    employees = AssignedEntrySerializer(many=True ,read_only=True)
     class Meta:
         model = Project
         fields = ('id',
@@ -147,22 +164,9 @@ class ProjectSerializer(serializers.ModelSerializer):
                   'location_id',
                   'location',
                   'project_due',
-                  'client')
+                  'client',
+                  'employees')
 
-class AssignedEntrySerializer(serializers.ModelSerializer):
-
-    employee_id = serializers.IntegerField(write_only=True)
-    employee = EmployeeSerializer(read_only=True)
-    project_id = serializers.IntegerField(write_only=True)
-    project = ProjectSerializer(read_only=True)
-
-    class Meta:
-        model = AssignedEntry
-        fields = ('id',
-                  'employee_id',
-                  'employee',
-                  'project_id',
-                  'project')
 
 class EmployeeTalentsViewSerializer(serializers.ModelSerializer):
 

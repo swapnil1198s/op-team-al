@@ -53,7 +53,7 @@ class Project(models.Model):
 class AssignedEntry(models.Model):
 
     employee = models.ForeignKey(Employee, related_name="projects", on_delete=models.CASCADE)
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, related_name="employees", on_delete=models.CASCADE)
 
 
 class TitleEntry(models.Model):

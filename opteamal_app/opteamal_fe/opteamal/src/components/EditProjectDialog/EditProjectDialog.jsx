@@ -59,11 +59,15 @@ class EditProjectDialog extends Component {
         .catch(console.log)
         
         this.setState({project_name:this.props.project[0].project_name})
-        this.setState({project_lead:{"value":this.props.project[0].project_lead_id, "label":this.props.project[0].project_lead}})
-        this.setState({project_start:this.props.project[0].start_date})
-        this.setState({project_due:this.props.project[0].due_date})
+        this.setState({project_lead:{"value":this.props.project[0].project_lead.id, "label":this.props.project[0].project_lead.f_name + ' ' + this.props.project[0].project_lead.l_name }})
+        this.setState({start_date:this.props.project[0].project_start})
+        this.setState({due_date:this.props.project[0].project_due})
         this.setState({location:{"value":this.props.project[0].location.id, "label":this.props.project[0].location.city_name}})
         this.setState({client:this.props.project[0].client})
+
+        this.props.project[0].employees.forEach(employee => {
+            this.state.assigned.push({"value":employee.employee.id, "label":employee.employee.f_name + ' ' + employee.employee.l_name})
+        })
 
       };
 
@@ -103,12 +107,82 @@ class EditProjectDialog extends Component {
                 })
             }).then(res => res.json())
             .then((data) => {
-            console.log(data);
             })
             .catch(console.log)
         
             
         });
+
+    }
+
+    
+    createAssignedEntry = (project) => {
+
+        const new_assigned= this.state.assigned
+        const current_assigned = this.props.project[0].employees
+        let add_assigned= []
+        let delete_assigned= []
+        let already_exist = false
+        let not_deleted = false
+
+        
+        new_assigned.forEach(function(new_employee){
+            already_exist = false
+            current_assigned.forEach(function(old_employee){
+                if(new_employee.value == old_employee.employee.id){
+                    already_exist = true   
+                }
+            });
+            if(!already_exist){
+                add_assigned.push(new_employee)
+            }    
+        });
+        
+
+        current_assigned.forEach(function(old_employee){
+            not_deleted = false
+            new_assigned.forEach(function(new_employee){
+                if(new_employee.value == old_employee.employee.id){
+                    not_deleted = true               
+                }
+            });
+            if(!not_deleted){
+                delete_assigned.push(old_employee)
+            } 
+
+        });
+        
+
+        
+        
+        for (var i = 0; i < add_assigned.length; i++) {
+            fetch('http://localhost:8000/api/project/assigned/', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    project_id: project.id,
+                    employee_id : add_assigned[i].value
+                })
+            }).then(res => res.json()).catch(console.log)
+
+       }
+
+       for (var i = 0; i < delete_assigned.length; i++) {
+
+            fetch('http://localhost:8000/api/project/assigned/'+ delete_assigned[i].id, {
+                method: 'DELETE',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                } 
+            }).then().catch(console.log)
+
+        }
+        
+        
 
     }
 
@@ -118,8 +192,8 @@ class EditProjectDialog extends Component {
         //const assignedArr = []
         //this.state.assigned.forEach(item => assignedArr.push(item.value));
 
-        fetch('http://localhost:8000/api/projects/', {
-            method: 'POST',
+        fetch('http://localhost:8000/api/projects/'+this.props.project[0].id +'/', {
+            method: 'PUT',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
@@ -134,7 +208,7 @@ class EditProjectDialog extends Component {
             })
         }).then(res => res.json())
         .then((data) => {
-          console.log(data);
+          
           this.createAssignedEntry(data)
           window.location.reload();
         })
@@ -180,7 +254,7 @@ class EditProjectDialog extends Component {
                             <Select
                             options={this.state.possible_employees} 
                             onChange={this.handleProjectLead}
-                            //value={this.state.project_lead}
+                            value={this.state.project_lead}
                             />
                         </FormGroup>
                         </div>
@@ -208,7 +282,7 @@ class EditProjectDialog extends Component {
                             <FormControl 
                                 type="date"
                                 placeholder= "Start Date"
-                                defaultValue= {this.state.start_date}
+                                value= {this.state.start_date}
                                 inputRef={(ref) => {this.start_date = ref}}
                                 onChange={() => this.handleText()}
                             />
@@ -220,7 +294,7 @@ class EditProjectDialog extends Component {
                             <FormControl 
                                 type="date"
                                 placeholder= "Due Date"
-                                defaultValue= {this.state.due_date}
+                                value= {this.state.due_date}
                                 inputRef={(ref) => {this.due_date = ref}}
                                 onChange={() => this.handleText()}
                             />
@@ -230,7 +304,7 @@ class EditProjectDialog extends Component {
                     
                     <Row>
 
-                    <FormGroup className="col-md-6">
+                    <FormGroup className="col-md-12">
                         <ControlLabel>Location</ControlLabel>
                         <Select
                         
@@ -240,15 +314,6 @@ class EditProjectDialog extends Component {
                          />
                          
                      </FormGroup>
-
-                     <FormGroup className="col-md-6">
-                        <ControlLabel>Remote Work?</ControlLabel>
-                        <Select
-                            options={[{value:true, label:'Yes' }, {value:false, label:'No' }]}
-                            onChange={this.handleRemoteWork}
-                            value={this.state.remote_work}
-                        />
-                    </FormGroup>
 
  
                                         
@@ -261,6 +326,7 @@ class EditProjectDialog extends Component {
                             defaultValue={[]}
                             isMulti
                             name="talents"
+                            value = {this.state.assigned}
                             options={this.state.possible_employees}
                             onChange={this.handleAssigned}
                         />
