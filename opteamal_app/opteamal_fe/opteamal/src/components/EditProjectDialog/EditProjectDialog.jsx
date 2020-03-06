@@ -16,23 +16,23 @@ import Select from 'react-select'
 
 
 
-class AddProjectDialog extends Component {
+class EditProjectDialog extends Component {
     constructor() {
         super();
         this.textInput = React.createRef();
         this.state = {
           selectedOption: '',
           project_name:"",
-          start_date:"1/1/1950",
-          due_date:"1/1/2150",
+          start_date:"1/1/2020",
+          due_date:"1/1/2030",
           location:0,
           remote_work:false,
           client:'',
           assigned:[],
-          project_lead:0,
+          project_lead:null,
           possible_employees:[],
           possible_locations:[],
-          errors:[]
+
         };
     }
 
@@ -57,6 +57,13 @@ class AddProjectDialog extends Component {
             this.setState({possible_locations:levels}); 
         })
         .catch(console.log)
+        
+        this.setState({project_name:this.props.project[0].project_name})
+        this.setState({project_lead:{"value":this.props.project[0].project_lead_id, "label":this.props.project[0].project_lead}})
+        this.setState({project_start:this.props.project[0].start_date})
+        this.setState({project_due:this.props.project[0].due_date})
+        this.setState({location:{"value":this.props.project[0].location.id, "label":this.props.project[0].location.city_name}})
+        this.setState({client:this.props.project[0].client})
 
       };
 
@@ -65,7 +72,7 @@ class AddProjectDialog extends Component {
         this.setState({start_date:this.start_date.value});
         this.setState({due_date:this.due_date.value});
         this.setState({client:this.client.value});
-        this.setState({project_name:this.project_name.value})
+        //this.setState({project_name:this.project_name.value})
      }
      handleLocation = (location) => {
         this.setState({location});
@@ -106,10 +113,10 @@ class AddProjectDialog extends Component {
     }
 
 
-    createProject = () => {
+    saveProject = () => {
 
-        const assignedArr = []
-        this.state.assigned.forEach(item => assignedArr.push(item.value));
+        //const assignedArr = []
+        //this.state.assigned.forEach(item => assignedArr.push(item.value));
 
         fetch('http://localhost:8000/api/projects/', {
             method: 'POST',
@@ -135,68 +142,22 @@ class AddProjectDialog extends Component {
         
       };
 
-      handleValidation(project_name, start_date, due_date, location, client, project_lead){
-        const errors = [];
-
-        if (project_name.length == 0){
-            errors.push("Project name is empty");
-        }
-
-        if (project_lead == 0){
-            errors.push("Project lead not selected")
-        }
+    handleSubmit = (e) => {
         
-        if (client.length == 0){
-            errors.push("Client name is empty");
-        }
-
-        if (start_date == "1/1/1950" || Date.parse(start_date) != Date.parse(start_date)){
-            errors.push("Start date not selected")
-        }
-
-        if (due_date == "1/1/2150" || Date.parse(due_date) != Date.parse(due_date)){
-            errors.push("Due date not selected")
-        }
-
-        if (Date.parse(start_date) > Date.parse(due_date)){
-            errors.push("Start date can't be after due date")
-        }
-
-        if (location == 0){
-            errors.push("Location not selected")
-        }
-
-        return errors;
-    }
-
-    handleSubmit = (e) => {    
-        e.preventDefault();
-
-        const { project_name, start_date, due_date, location, client, project_lead } = this.state;
-
-        const errors = this.handleValidation(project_name, start_date, due_date, location, client, project_lead);
-        if (errors.length > 0) {
-            this.setState({ errors });
-            return;
-        }else{
-            this.createProject();
-        }
-    };
+        this.handleEditing();
+      };
 
     
 
   render() {
-    const {errors} = this.state;
+
     return (
       <div className="content">
         <Grid fluid>
           <Row>
             <Col xsOffset={4} md={4}>
-                {errors.map(error => (
-                <p key={error}><i class="material-icons">close</i> {error}</p>
-                ))}
               <Card
-                title="Add Project"
+                title="Edit Project"
                 content={
                   <form>
                    <Row>
@@ -205,8 +166,8 @@ class AddProjectDialog extends Component {
                             <ControlLabel>Project Name</ControlLabel>
                             <FormControl 
                                 type="text"
-                                placeholder= "Project Name"
-                                defaultValue= ""
+                                placeholder= {this.props.project[0].project_name}
+                                defaultValue= {this.props.project[0].project_name}
                                 inputRef={(ref) => {this.project_name = ref}}
                                 onChange={() => this.handleText()}
                             />
@@ -219,6 +180,7 @@ class AddProjectDialog extends Component {
                             <Select
                             options={this.state.possible_employees} 
                             onChange={this.handleProjectLead}
+                            //value={this.state.project_lead}
                             />
                         </FormGroup>
                         </div>
@@ -230,8 +192,8 @@ class AddProjectDialog extends Component {
                             <ControlLabel>Client Name</ControlLabel>
                             <FormControl 
                                 type="text"
-                                placeholder= "Client Name"
-                                defaultValue= ""
+                                placeholder= {this.state.client}
+                                defaultValue= {this.state.client}
                                 inputRef={(ref) => {this.client = ref}}
                                 onChange={() => this.handleText()}
                             />
@@ -246,7 +208,7 @@ class AddProjectDialog extends Component {
                             <FormControl 
                                 type="date"
                                 placeholder= "Start Date"
-                                defaultValue= ""
+                                defaultValue= {this.state.start_date}
                                 inputRef={(ref) => {this.start_date = ref}}
                                 onChange={() => this.handleText()}
                             />
@@ -258,7 +220,7 @@ class AddProjectDialog extends Component {
                             <FormControl 
                                 type="date"
                                 placeholder= "Due Date"
-                                defaultValue= ""
+                                defaultValue= {this.state.due_date}
                                 inputRef={(ref) => {this.due_date = ref}}
                                 onChange={() => this.handleText()}
                             />
@@ -274,6 +236,7 @@ class AddProjectDialog extends Component {
                         
                          options={this.state.possible_locations}
                          onChange={this.handleLocation}
+                         value={this.state.location}
                          />
                          
                      </FormGroup>
@@ -283,6 +246,7 @@ class AddProjectDialog extends Component {
                         <Select
                             options={[{value:true, label:'Yes' }, {value:false, label:'No' }]}
                             onChange={this.handleRemoteWork}
+                            value={this.state.remote_work}
                         />
                     </FormGroup>
 
@@ -305,8 +269,8 @@ class AddProjectDialog extends Component {
                     </Row>
 
                     <ButtonToolbar>
-                        <Button onClick = {this.handleSubmit} bsStyle="default" round fill>
-                             Add Project
+                        <Button onClick = {this.saveProject} bsStyle="default" round fill>
+                             Save Project
                         </Button>
                         <Button onClick={this.props.closePopup} bsStyle="default" round fill>
                              Close
@@ -324,4 +288,4 @@ class AddProjectDialog extends Component {
   }
 }
 
-export default AddProjectDialog;
+export default EditProjectDialog;

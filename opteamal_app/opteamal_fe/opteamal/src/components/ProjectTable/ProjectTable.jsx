@@ -13,10 +13,16 @@ export class ProjectTable extends Component {
     });
   };
 
+  onEditClick = event => {
+    const id = event.currentTarget.getAttribute("data-rowid");
+    const project = this.props.projects.filter(obj => (obj.id==id))
+    this.props.closePopupEdit(project);
+  };
+
   onDeleteClick = event => {
     const id = event.currentTarget.getAttribute("data-rowid");
     const project = this.props.projects.filter(obj => (obj.id==id))
-    this.props.closePopup(project);
+    this.props.closePopupDel(project);
   };
 
   render() {
@@ -43,7 +49,7 @@ export class ProjectTable extends Component {
           <td>{projects[i].client}</td>
           <td className="td-actions">
             <OverlayTrigger placement="top" overlay={edit}>
-              <Button bsStyle="info" simple type="button" bsSize="xs">
+              <Button data-rowid={projects[i].id} onClick={this.onEditClick} bsStyle="info" simple type="button" bsSize="xs">
               <i className="material-icons">edit</i>
               </Button>
             </OverlayTrigger>
