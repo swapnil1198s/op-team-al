@@ -209,11 +209,11 @@ class AddEmployeeDialog extends Component {
         const errors = [];
 
         if ((f_name.length == 0) || (l_name.length == 0)){
-            errors.push("Missing first or last name");
+            errors.push("First or last name is empty");
         }
         
         if ((email.split("").filter(x => x == "@").length !== 1) || (email.indexOf(".") == -1)) {
-            errors.push("Invalid email");
+            errors.push("Email is invalid");
         }
         
         if (titles == 0){

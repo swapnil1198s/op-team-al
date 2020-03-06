@@ -23,16 +23,16 @@ class AddProjectDialog extends Component {
         this.state = {
           selectedOption: '',
           project_name:"",
-          start_date:"1/1/2020",
-          due_date:"1/1/2030",
+          start_date:"1/1/1950",
+          due_date:"1/1/2150",
           location:0,
           remote_work:false,
           client:'',
           assigned:[],
-          project_lead:null,
+          project_lead:0,
           possible_employees:[],
           possible_locations:[],
-
+          errors:[]
         };
     }
 
@@ -135,20 +135,66 @@ class AddProjectDialog extends Component {
         
       };
 
-    handleSubmit = (e) => {
+      handleValidation(project_name, start_date, due_date, location, client, project_lead){
+        const errors = [];
+
+        if (project_name.length == 0){
+            errors.push("Project name is empty");
+        }
+
+        if (project_lead == 0){
+            errors.push("Project lead not selected")
+        }
         
-        this.handleEditing();
-      };
+        if (client.length == 0){
+            errors.push("Client name is empty");
+        }
+
+        if (start_date == "1/1/1950" || Date.parse(start_date) != Date.parse(start_date)){
+            errors.push("Start date not selected")
+        }
+
+        if (due_date == "1/1/2150" || Date.parse(due_date) != Date.parse(due_date)){
+            errors.push("Due date not selected")
+        }
+
+        if (Date.parse(start_date) > Date.parse(due_date)){
+            errors.push("Start date can't be after due date")
+        }
+
+        if (location == 0){
+            errors.push("Location not selected")
+        }
+
+        return errors;
+    }
+
+    handleSubmit = (e) => {    
+        e.preventDefault();
+
+        const { project_name, start_date, due_date, location, client, project_lead } = this.state;
+
+        const errors = this.handleValidation(project_name, start_date, due_date, location, client, project_lead);
+        if (errors.length > 0) {
+            this.setState({ errors });
+            return;
+        }else{
+            this.createProject();
+        }
+    };
 
     
 
   render() {
-
+    const {errors} = this.state;
     return (
       <div className="content">
         <Grid fluid>
           <Row>
             <Col xsOffset={4} md={4}>
+                {errors.map(error => (
+                <p key={error}><i class="material-icons">close</i> {error}</p>
+                ))}
               <Card
                 title="Add Project"
                 content={
@@ -259,7 +305,7 @@ class AddProjectDialog extends Component {
                     </Row>
 
                     <ButtonToolbar>
-                        <Button onClick = {this.createProject} bsStyle="default" round fill>
+                        <Button onClick = {this.handleSubmit} bsStyle="default" round fill>
                              Add Project
                         </Button>
                         <Button onClick={this.props.closePopup} bsStyle="default" round fill>
