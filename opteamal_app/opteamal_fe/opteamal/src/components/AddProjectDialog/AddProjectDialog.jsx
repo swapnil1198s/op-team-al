@@ -36,6 +36,19 @@ class AddProjectDialog extends Component {
         };
     }
 
+    customStyles = {
+        invalidEntry: {
+            borderColor: 'red'
+        },
+        control: (base, state) => ({
+          ...base,
+          borderColor: state.isFocused ? "red" : "red",
+          "&:hover": {
+            borderColor: state.isFocused ? "red" : "red"
+          }
+        })
+    }
+
 
     componentDidMount() {
         
@@ -137,36 +150,73 @@ class AddProjectDialog extends Component {
 
       handleValidation(project_name, start_date, due_date, location, client, project_lead){
         const errors = [];
+        var errorCount = 0
 
         if (project_name.length == 0){
-            errors.push("Project name is empty");
+            errors["project_name"]="*Project name required"
+            errorCount++
+        }else{
+            errors["project_name"]="No Error"
         }
 
         if (project_lead == 0){
-            errors.push("Project lead not selected")
+            errors["project_lead"]="*Project lead required"
+            errorCount++
+        }else{
+            errors["project_lead"]="No Error"
         }
         
         if (client.length == 0){
-            errors.push("Client name is empty");
-        }
-
-        if (start_date == "1/1/1950" || Date.parse(start_date) != Date.parse(start_date)){
-            errors.push("Start date not selected")
+            errors["client"]="*Client name required"
+            errorCount++
+        }else{
+            errors["client"]="No Error"
         }
 
         if (due_date == "1/1/2150" || Date.parse(due_date) != Date.parse(due_date)){
-            errors.push("Due date not selected")
+            errors["due_date"]="*Due date required"
+            errorCount++
+        }else{
+            errors["due_date"]="No Error"
         }
 
-        if (Date.parse(start_date) > Date.parse(due_date)){
-            errors.push("Start date can't be after due date")
+        if (start_date == "1/1/1950" || Date.parse(start_date) != Date.parse(start_date)){
+            errors["start_date"]="*Start date required"
+            errorCount++
+        }else if (Date.parse(start_date) > Date.parse(due_date)){
+            errors["start_date"]="*Start date can't be after due date"
+            errors["due_date"]=""
+            errorCount++
+        }else{
+            errors["start_date"]="No Error"
         }
 
         if (location == 0){
-            errors.push("Location not selected")
+            errors["location"]="*Location required"
+            errorCount++
+        }else{
+            errors["location"]="No Error"
         }
 
+        errors["errorCount"]=errorCount
         return errors;
+    }
+
+    handleStyle(data, entryMethod){
+        if(this.state.errors[data]!="No Error" && this.state.errors[data]!=null){
+            
+            if(entryMethod=="selection")
+                return this.customStyles;
+            else
+                return this.customStyles.invalidEntry;
+
+        }
+    }
+
+    handleError(type){
+        if(this.state.errors[type]!="No Error" && this.state.errors[type]!=null){
+            return <text style={{color: "red"}}>{this.state.errors[type]}</text>
+        }
     }
 
     handleSubmit = (e) => {    
@@ -175,15 +225,13 @@ class AddProjectDialog extends Component {
         const { project_name, start_date, due_date, location, client, project_lead } = this.state;
 
         const errors = this.handleValidation(project_name, start_date, due_date, location, client, project_lead);
-        if (errors.length > 0) {
+        if (errors["errorCount"] > 0) {
             this.setState({ errors });
             return;
         }else{
             this.createProject();
         }
     };
-
-    
 
   render() {
     const {errors} = this.state;
@@ -192,9 +240,6 @@ class AddProjectDialog extends Component {
         <Grid fluid>
           <Row>
             <Col xsOffset={4} md={4}>
-                {errors.map(error => (
-                <p key={error}><i class="material-icons">close</i> {error}</p>
-                ))}
               <Card
                 title="Add Project"
                 content={
@@ -204,12 +249,14 @@ class AddProjectDialog extends Component {
                         <FormGroup>
                             <ControlLabel>Project Name</ControlLabel>
                             <FormControl 
+                                style={this.handleStyle("project_name", "textEntry")}
                                 type="text"
                                 placeholder= "Project Name"
                                 defaultValue= ""
                                 inputRef={(ref) => {this.project_name = ref}}
                                 onChange={() => this.handleText()}
                             />
+                            {this.handleError("project_name")}
                         </FormGroup>
                         </div>
                     
@@ -217,9 +264,11 @@ class AddProjectDialog extends Component {
                         <FormGroup>
                             <ControlLabel>Project Lead</ControlLabel>
                             <Select
+                            styles={this.handleStyle("project_lead", "selection")}
                             options={this.state.possible_employees} 
                             onChange={this.handleProjectLead}
                             />
+                            {this.handleError("project_lead")}
                         </FormGroup>
                         </div>
                     </Row>
@@ -229,12 +278,14 @@ class AddProjectDialog extends Component {
                         <FormGroup>
                             <ControlLabel>Client Name</ControlLabel>
                             <FormControl 
+                                style={this.handleStyle("client", "textEntry")}
                                 type="text"
                                 placeholder= "Client Name"
                                 defaultValue= ""
                                 inputRef={(ref) => {this.client = ref}}
                                 onChange={() => this.handleText()}
                             />
+                            {this.handleError("client")}
                         </FormGroup>
                     </div>
                     </Row> 
@@ -244,24 +295,28 @@ class AddProjectDialog extends Component {
                         <FormGroup>
                         <ControlLabel>Project Start</ControlLabel>
                             <FormControl 
+                                style={this.handleStyle("start_date", "textEntry")}
                                 type="date"
                                 placeholder= "Start Date"
                                 defaultValue= ""
                                 inputRef={(ref) => {this.start_date = ref}}
                                 onChange={() => this.handleText()}
                             />
+                            {this.handleError("start_date")}
                         </FormGroup>
                         </div>
                         <div className="col-md-6">
                         <FormGroup>
                         <ControlLabel>Project Due Date</ControlLabel>
                             <FormControl 
+                                style={this.handleStyle("due_date", "textEntry")}
                                 type="date"
                                 placeholder= "Due Date"
                                 defaultValue= ""
                                 inputRef={(ref) => {this.due_date = ref}}
                                 onChange={() => this.handleText()}
                             />
+                            {this.handleError("due_date")}
                         </FormGroup>
                         </div>
                     </Row>
@@ -271,11 +326,11 @@ class AddProjectDialog extends Component {
                     <FormGroup className="col-md-6">
                         <ControlLabel>Location</ControlLabel>
                         <Select
-                        
+                         styles={this.handleStyle("location", "selection")}
                          options={this.state.possible_locations}
                          onChange={this.handleLocation}
                          />
-                         
+                         {this.handleError("location")}
                      </FormGroup>
 
                      <FormGroup className="col-md-6">

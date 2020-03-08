@@ -26,8 +26,8 @@ class EditEmployeeDialog extends Component {
           f_name:"",
           l_name:"",
           email:"",
-          start_date:"1/1/2020",
-          availability:"1/1/2030",
+          start_date:"1/1/1950",
+          availability:"1/1/2150",
           location:0,
           remote_work:false,
           titles:[],
@@ -38,9 +38,22 @@ class EditEmployeeDialog extends Component {
           possible_levels:[],
           possible_locations:[],
           possible_talents:[],
+          errors:[]
         };
     }
 
+    customStyles = {
+        invalidEntry: {
+            borderColor: 'red'
+        },
+        control: (base, state) => ({
+          ...base,
+          borderColor: state.isFocused ? "red" : "red",
+          "&:hover": {
+            borderColor: state.isFocused ? "red" : "red"
+          }
+        })
+    }
 
     componentDidMount() {
         
@@ -316,13 +329,112 @@ class EditEmployeeDialog extends Component {
         
       };
 
-    handleSubmit = (e) => {
+      handleValidation(f_name,l_name,email,titles,start_date,availability,location,managementLevel){
+        const errors = []
+        var errorCount = 0
+
+        if (f_name.length == 0){
+            errors["f_name"]="*First name required"
+            errorCount++
+        }else{
+            errors["f_name"]="No Error"
+        }
+
+        if (l_name.length == 0){
+            errors["l_name"]="*Last name required"
+            errorCount++
+        }else{
+            errors["l_name"]="No Error"
+        }
         
-        this.handleEditing();
-      };
+        if (email.length == 0){
+            errors["email"]="*Email required"
+            errorCount++
+        }else if ((email.split("").filter(x => x == "@").length !== 1) || (email.indexOf(".") == -1)) {
+            errors["email"]="*Email invalid"
+            errorCount++
+        }else{
+            errors["email"]="No Error"
+        }
+        
+        if (titles == 0){
+            errors["titles"]="*Title required"
+            errorCount++
+        }else{
+            errors["titles"]="No Error"
+        }
+
+        if (managementLevel == 0){
+            errors["managementLevel"]="*Management level required"
+            errorCount++
+        }else{
+            errors["managementLevel"]="No Error"
+        }
+
+        if (availability == "1/1/2150" || Date.parse(availability) != Date.parse(availability)){
+            errors["availability"]="*Availability required"
+            errorCount++
+        }else{
+            errors["availability"]="No Error"
+        }
+        
+        if (start_date == "1/1/1950" || Date.parse(start_date) != Date.parse(start_date)){
+            errors["start_date"]="*Start date required"
+            errorCount++
+        }else if (Date.parse(start_date) > Date.parse(availability)){
+            errors["start_date"]="*Start date can't be after availability"
+            errors["availability"]=""
+            errorCount++
+        }else{
+            errors["start_date"]="No Error"
+        }
+
+        if (location == 0){
+            errors["location"]="*Location required"
+            errorCount++
+        }else{
+            errors["location"]="No Error"
+        }
+
+        errors["errorCount"]=errorCount
+        return errors;
+    }
+
+    handleStyle(data, entryMethod){
+        if(this.state.errors[data]!="No Error" && this.state.errors[data]!=null){
+            
+            if(entryMethod=="selection")
+                return this.customStyles;
+            else
+                return this.customStyles.invalidEntry;
+
+        }
+    }
+
+    handleError(type){
+        if(this.state.errors[type]!="No Error" && this.state.errors[type]!=null){
+            return <text style={{color: "red"}}>{this.state.errors[type]}</text>
+        }
+    }
+
+    
+
+    handleSubmit = (e) => {    
+        e.preventDefault();
+
+        const { f_name, l_name, email, titles, start_date, availability, location, managementLevel, errorCount } = this.state;
+
+        const errors = this.handleValidation(f_name, l_name, email, titles, start_date, availability, location, managementLevel);
+        if (errors["errorCount"] > 0) {
+            this.setState({ errors });
+            return;
+        }else{
+            this.saveEmployee();
+        }
+    };
 
   render() {
-
+    const {errors} = this.state
     return (
       <div className="content">
         <Grid fluid>
@@ -337,12 +449,14 @@ class EditEmployeeDialog extends Component {
                         <FormGroup>
                             <ControlLabel>First Name</ControlLabel>
                             <FormControl 
+                                style={this.handleStyle("f_name", "textEntry")}
                                 type="text"
                                 placeholder= {this.props.employee[0].f_name}
                                 defaultValue= {this.props.employee[0].f_name}
                                 inputRef={(ref) => {this.first_name = ref}}
                                 onChange={() => this.handleText()}
                             />
+                            {this.handleError("f_name")}
                         </FormGroup>
                         </div>
                     
@@ -350,12 +464,14 @@ class EditEmployeeDialog extends Component {
                         <FormGroup>
                         <ControlLabel>Last Name</ControlLabel>
                             <FormControl 
+                                style={this.handleStyle("l_name", "textEntry")}
                                 type="text"
                                 placeholder= {this.props.employee[0].l_name}
                                 defaultValue= {this.props.employee[0].l_name}
                                 inputRef={(ref) => {this.last_name = ref}}
                                 onChange={() => this.handleText()}
                             />
+                            {this.handleError("l_name")}
                         </FormGroup>
                         </div>
                     </Row> 
@@ -364,22 +480,26 @@ class EditEmployeeDialog extends Component {
                         <FormGroup>
                             <ControlLabel>Email address</ControlLabel>
                             <FormControl 
+                                style={this.handleStyle("email", "textEntry")}
                                 type="email"
                                 placeholder= "Email"
                                 defaultValue= {this.props.employee[0].email}
                                 inputRef={(ref) => {this.email = ref}}
                                 onChange={() => this.handleText()}
                             />
+                            {this.handleError("email")}
                         </FormGroup>
                         </div>
                         <div className="col-md-6">
                         <FormGroup>
                             <ControlLabel>Management Level</ControlLabel>
                             <Select
+                            styles={this.handleStyle("managementLevel", "selection")}
                             options={this.state.possible_levels} 
                             onChange={this.handleManagementLevel}
                             value={this.state.managementLevel}
                             />
+                            {this.handleError("management_level")}
                         </FormGroup>
                         </div>
                     </Row>
@@ -388,10 +508,12 @@ class EditEmployeeDialog extends Component {
                         <FormGroup>
                             <ControlLabel>Titles</ControlLabel>
                             <Select
+                            styles={this.handleStyle("titles", "selection")}
                             options={this.state.possible_titles}
                             onChange={this.handleTitles}
                             value={this.state.titles}
                             />
+                            {this.handleError("titles")}
                         </FormGroup>
                         </div>
                     </Row>
@@ -401,24 +523,28 @@ class EditEmployeeDialog extends Component {
                         <FormGroup>
                         <ControlLabel>Start Date</ControlLabel>
                             <FormControl 
+                                style={this.handleStyle("start_date", "textEntry")}
                                 type="date"
                                 placeholder= "Start Date"
                                 defaultValue= {this.props.employee[0].start_date}
                                 inputRef={(ref) => {this.start_date = ref}}
                                 onChange={() => this.handleText()}
                             />
+                            {this.handleError("start_date")}
                         </FormGroup>
                         </div>
                         <div className="col-md-6">
                         <FormGroup>
                         <ControlLabel>Next Availability</ControlLabel>
                             <FormControl 
+                                style={this.handleStyle("availability", "textEntry")}
                                 type="date"
                                 placeholder= "Start Date"
                                 defaultValue= {this.props.employee[0].availability}
                                 inputRef={(ref) => {this.availability = ref}}
                                 onChange={() => this.handleText()}
                             />
+                            {this.handleError("availability")}
                         </FormGroup>
                         </div>
                     </Row>
@@ -428,12 +554,13 @@ class EditEmployeeDialog extends Component {
                     <FormGroup className="col-md-4">
                         <ControlLabel>Location</ControlLabel>
                         <Select
+                            style={this.handleStyle("locations", "selection")}
                             options={this.state.possible_locations}
                             onChange={this.handleLocation}
                             value={this.state.location}
                     
                          />
-                         
+                         {this.handleError("location")}
                      </FormGroup>
 
                      <FormGroup className="col-md-4">
@@ -490,7 +617,7 @@ class EditEmployeeDialog extends Component {
                     </Row>
 
                     <ButtonToolbar>
-                        <Button onClick = {this.saveEmployee} bsStyle="default" round fill>
+                        <Button onClick = {this.handleSubmit} bsStyle="default" round fill>
                              Save Employee
                         </Button>
                         <Button onClick={this.props.closePopup} bsStyle="default" round fill>

@@ -46,6 +46,18 @@ class AddEmployeeDialog extends Component {
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
+    customStyles = {
+        invalidEntry: {
+            borderColor: 'red'
+        },
+        control: (base, state) => ({
+          ...base,
+          borderColor: state.isFocused ? "red" : "red",
+          "&:hover": {
+            borderColor: state.isFocused ? "red" : "red"
+          }
+        })
+    }
 
     componentDidMount() {
         
@@ -144,7 +156,7 @@ class AddEmployeeDialog extends Component {
     }
 
     createTalents = (employee) => {
-
+        
         this.state.talents.forEach(function(talent) {
             console.log(talent.label);
             console.log(employee.id)
@@ -160,8 +172,7 @@ class AddEmployeeDialog extends Component {
                     talent_id : talent.value
                 })
             }).then(res => res.json()).catch(console.log)
-        
-            
+    
         });
 
     }
@@ -195,71 +206,118 @@ class AddEmployeeDialog extends Component {
             })
         }).then(res => res.json())
         .then((data) => {
-          
           this.createDesiredLocations(data)
           this.createTalents(data)
-          window.location.reload();
+          window.location.reload()
         })
+            
         .catch(console.log)
-        
       };
 
 
       handleValidation(f_name,l_name,email,titles,start_date,availability,location,managementLevel){
-        const errors = [];
+        const errors = []
+        var errorCount = 0
 
-        if ((f_name.length == 0) || (l_name.length == 0)){
-            errors.push("First or last name is empty");
+        if (f_name.length == 0){
+            errors["f_name"]="*First name required"
+            errorCount++
+        }else{
+            errors["f_name"]="No Error"
+        }
+
+        if (l_name.length == 0){
+            errors["l_name"]="*Last name required"
+            errorCount++
+        }else{
+            errors["l_name"]="No Error"
         }
         
         if (email.length == 0){
-            errors.push("Email is empty");
+            errors["email"]="*Email required"
+            errorCount++
         }else if ((email.split("").filter(x => x == "@").length !== 1) || (email.indexOf(".") == -1)) {
-            errors.push("Email is invalid");
+            errors["email"]="*Email invalid"
+            errorCount++
+        }else{
+            errors["email"]="No Error"
         }
         
         if (titles == 0){
-            errors.push("Title not selected")
+            errors["titles"]="*Title required"
+            errorCount++
+        }else{
+            errors["titles"]="No Error"
         }
 
         if (managementLevel == 0){
-            errors.push("Management level not selected")
-        }
-
-        if (start_date == "1/1/1950" || Date.parse(start_date) != Date.parse(start_date)){
-            errors.push("Start date not selected")
+            errors["managementLevel"]="*Management level required"
+            errorCount++
+        }else{
+            errors["managementLevel"]="No Error"
         }
 
         if (availability == "1/1/2150" || Date.parse(availability) != Date.parse(availability)){
-            errors.push("Availability not selected")
+            errors["availability"]="*Availability required"
+            errorCount++
+        }else{
+            errors["availability"]="No Error"
         }
-
-        if (Date.parse(start_date) > Date.parse(availability)){
-            errors.push("Start date can't be after next available date")
+        
+        if (start_date == "1/1/1950" || Date.parse(start_date) != Date.parse(start_date)){
+            errors["start_date"]="*Start date required"
+            errorCount++
+        }else if (Date.parse(start_date) > Date.parse(availability)){
+            errors["start_date"]="*Start date can't be after availability"
+            errors["availability"]=""
+            errorCount++
+        }else{
+            errors["start_date"]="No Error"
         }
 
         if (location == 0){
-            errors.push("Location not selected")
+            errors["location"]="*Location required"
+            errorCount++
+        }else{
+            errors["location"]="No Error"
         }
 
+        errors["errorCount"]=errorCount
         return errors;
     }
+
+    handleStyle(data, entryMethod){
+        if(this.state.errors[data]!="No Error" && this.state.errors[data]!=null){
+            
+            if(entryMethod=="selection")
+                return this.customStyles;
+            else
+                return this.customStyles.invalidEntry;
+
+        }
+    }
+
+    handleError(type){
+        if(this.state.errors[type]!="No Error" && this.state.errors[type]!=null){
+            return <text style={{color: "red"}}>{this.state.errors[type]}</text>
+        }
+    }
+
+    
 
     handleSubmit = (e) => {    
         e.preventDefault();
 
-        const { f_name, l_name, email, titles, start_date, availability, location, managementLevel } = this.state;
+        const { f_name, l_name, email, titles, start_date, availability, location, managementLevel, errorCount } = this.state;
 
         const errors = this.handleValidation(f_name, l_name, email, titles, start_date, availability, location, managementLevel);
-        if (errors.length > 0) {
+        if (errors["errorCount"] > 0) {
             this.setState({ errors });
             return;
         }else{
             this.createEmployee();
         }
     };
-
-    
 
   render() {
     const {errors} = this.state;
@@ -268,9 +326,6 @@ class AddEmployeeDialog extends Component {
         <Grid fluid>
           <Row>
             <Col xsOffset={4} md={4}>
-              {errors.map(error => (
-                <p key={error}><i class="material-icons">close</i> {error}</p>
-                ))}
               <Card
                 title="Add Employee"
                 content={
@@ -280,12 +335,14 @@ class AddEmployeeDialog extends Component {
                         <FormGroup>
                             <ControlLabel>First Name</ControlLabel>
                             <FormControl 
+                                style={this.handleStyle("f_name", "textEntry")}
                                 type="text"
                                 placeholder= "First Name"
                                 defaultValue= ""
                                 inputRef={(ref) => {this.first_name = ref}}
                                 onChange={() => this.handleText()}
                             />
+                            {this.handleError("f_name")}
                         </FormGroup>
                         </div>
                     
@@ -293,13 +350,16 @@ class AddEmployeeDialog extends Component {
                         <FormGroup>
                         <ControlLabel>Last Name</ControlLabel>
                             <FormControl 
+                                style={this.handleStyle("l_name", "textEntry")}
                                 type="text"
                                 placeholder= "Last Name"
                                 defaultValue= ""
                                 inputRef={(ref) => {this.last_name = ref}}
                                 onChange={() => this.handleText()}
                             />
+                            {this.handleError("l_name")}
                         </FormGroup>
+                        
                         </div>
                     </Row> 
                     <Row>
@@ -307,21 +367,26 @@ class AddEmployeeDialog extends Component {
                         <FormGroup>
                             <ControlLabel>Email address</ControlLabel>
                             <FormControl 
+                                style={this.handleStyle("email", "textEntry")}
                                 type="email"
                                 placeholder= "Email"
                                 defaultValue= ""
                                 inputRef={(ref) => {this.email = ref}}
                                 onChange={() => this.handleText()}
                             />
+                            {this.handleError("email")}
                         </FormGroup>
+                        
                         </div>
                         <div className="col-md-6">
                         <FormGroup>
                             <ControlLabel>Management Level</ControlLabel>
                             <Select
+                            styles={this.handleStyle("managementLevel", "selection")}
                             options={this.state.possible_levels} 
                             onChange={this.handleManagementLevel}
                             />
+                            {this.handleError("managementLevel")}
                         </FormGroup>
                         </div>
                     </Row>
@@ -330,9 +395,11 @@ class AddEmployeeDialog extends Component {
                         <FormGroup>
                             <ControlLabel>Titles</ControlLabel>
                             <Select
+                            styles={this.handleStyle("titles", "selection")}
                             options={this.state.possible_titles}
                             onChange={this.handleTitles}
                             />
+                            {this.handleError("titles")}
                         </FormGroup>
                         </div>
                     </Row>
@@ -342,24 +409,28 @@ class AddEmployeeDialog extends Component {
                         <FormGroup>
                         <ControlLabel>Start Date</ControlLabel>
                             <FormControl 
+                                style={this.handleStyle("start_date", "textEntry")}
                                 type="date"
                                 placeholder= "Start Date"
                                 defaultValue= ""
                                 inputRef={(ref) => {this.start_date = ref}}
                                 onChange={() => this.handleText()}
                             />
+                            {this.handleError("start_date")}
                         </FormGroup>
                         </div>
                         <div className="col-md-6">
                         <FormGroup>
                         <ControlLabel>Next Availability</ControlLabel>
                             <FormControl 
+                                style={this.handleStyle("availability", "textEntry")}
                                 type="date"
                                 placeholder= "Start Date"
                                 defaultValue= ""
                                 inputRef={(ref) => {this.availability = ref}}
                                 onChange={() => this.handleText()}
                             />
+                            {this.handleError("availability")}
                         </FormGroup>
                         </div>
                     </Row>
@@ -369,11 +440,11 @@ class AddEmployeeDialog extends Component {
                     <FormGroup className="col-md-4">
                         <ControlLabel>Location</ControlLabel>
                         <Select
-                        
+                         styles={this.handleStyle("location", "selection")}
                          options={this.state.possible_locations}
                          onChange={this.handleLocation}
                          />
-                         
+                         {this.handleError("location")}
                      </FormGroup>
 
                      <FormGroup className="col-md-4">

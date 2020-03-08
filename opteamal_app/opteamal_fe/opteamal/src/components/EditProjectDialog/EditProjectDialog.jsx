@@ -23,8 +23,8 @@ class EditProjectDialog extends Component {
         this.state = {
           selectedOption: '',
           project_name:"",
-          start_date:"1/1/2020",
-          due_date:"1/1/2030",
+          start_date:"1/1/1950",
+          due_date:"1/1/2150",
           location:0,
           remote_work:false,
           client:'',
@@ -32,10 +32,22 @@ class EditProjectDialog extends Component {
           project_lead:null,
           possible_employees:[],
           possible_locations:[],
-
+          errors:[]
         };
     }
 
+    customStyles = {
+        invalidEntry: {
+            borderColor: 'red'
+        },
+        control: (base, state) => ({
+          ...base,
+          borderColor: state.isFocused ? "red" : "red",
+          "&:hover": {
+            borderColor: state.isFocused ? "red" : "red"
+          }
+        })
+    }
 
     componentDidMount() {
         
@@ -76,7 +88,7 @@ class EditProjectDialog extends Component {
         this.setState({start_date:this.start_date.value});
         this.setState({due_date:this.due_date.value});
         this.setState({client:this.client.value});
-        //this.setState({project_name:this.project_name.value})
+        this.setState({project_name:this.project_name.value})
      }
      handleLocation = (location) => {
         this.setState({location});
@@ -216,10 +228,90 @@ class EditProjectDialog extends Component {
         
       };
 
-    handleSubmit = (e) => {
+      handleValidation(project_name, start_date, due_date, location, client, project_lead){
+        const errors = [];
+        var errorCount = 0
+
+        if (project_name.length == 0){
+            errors["project_name"]="*Project name required"
+            errorCount++
+        }else{
+            errors["project_name"]="No Error"
+        }
+
+        if (project_lead == 0){
+            errors["project_lead"]="*Project lead required"
+            errorCount++
+        }else{
+            errors["project_lead"]="No Error"
+        }
         
-        this.handleEditing();
-      };
+        if (client.length == 0){
+            errors["client"]="*Client name required"
+            errorCount++
+        }else{
+            errors["client"]="No Error"
+        }
+
+        if (due_date == "1/1/2150" || Date.parse(due_date) != Date.parse(due_date)){
+            errors["due_date"]="*Due date required"
+            errorCount++
+        }else{
+            errors["due_date"]="No Error"
+        }
+
+        if (start_date == "1/1/1950" || Date.parse(start_date) != Date.parse(start_date)){
+            errors["start_date"]="*Start date required"
+            errorCount++
+        }else if (Date.parse(start_date) > Date.parse(due_date)){
+            errors["start_date"]="*Start date can't be after due date"
+            errors["due_date"]=""
+            errorCount++
+        }else{
+            errors["start_date"]="No Error"
+        }
+
+        if (location == 0){
+            errors["location"]="*Location required"
+            errorCount++
+        }else{
+            errors["location"]="No Error"
+        }
+
+        errors["errorCount"]=errorCount
+        return errors;
+    }
+
+    handleStyle(data, entryMethod){
+        if(this.state.errors[data]!="No Error" && this.state.errors[data]!=null){
+            
+            if(entryMethod=="selection")
+                return this.customStyles;
+            else
+                return this.customStyles.invalidEntry;
+
+        }
+    }
+
+    handleError(type){
+        if(this.state.errors[type]!="No Error" && this.state.errors[type]!=null){
+            return <text style={{color: "red"}}>{this.state.errors[type]}</text>
+        }
+    }
+
+    handleSubmit = (e) => {    
+        e.preventDefault();
+
+        const { project_name, start_date, due_date, location, client, project_lead } = this.state;
+
+        const errors = this.handleValidation(project_name, start_date, due_date, location, client, project_lead);
+        if (errors["errorCount"] > 0) {
+            this.setState({ errors });
+            return;
+        }else{
+            this.saveProject();
+        }
+    };
 
     
 
@@ -239,12 +331,14 @@ class EditProjectDialog extends Component {
                         <FormGroup>
                             <ControlLabel>Project Name</ControlLabel>
                             <FormControl 
+                                style={this.handleStyle("project_name", "textEntry")}
                                 type="text"
                                 placeholder= {this.props.project[0].project_name}
                                 defaultValue= {this.props.project[0].project_name}
                                 inputRef={(ref) => {this.project_name = ref}}
                                 onChange={() => this.handleText()}
                             />
+                            {this.handleError("project_name")}
                         </FormGroup>
                         </div>
                     
@@ -252,10 +346,12 @@ class EditProjectDialog extends Component {
                         <FormGroup>
                             <ControlLabel>Project Lead</ControlLabel>
                             <Select
+                            styles={this.handleStyle("project_lead", "selection")}
                             options={this.state.possible_employees} 
                             onChange={this.handleProjectLead}
                             value={this.state.project_lead}
                             />
+                            {this.handleError("project_lead")}
                         </FormGroup>
                         </div>
                     </Row>
@@ -265,12 +361,14 @@ class EditProjectDialog extends Component {
                         <FormGroup>
                             <ControlLabel>Client Name</ControlLabel>
                             <FormControl 
+                                styles={this.handleStyle("client", "textEntry")}
                                 type="text"
                                 placeholder= {this.state.client}
                                 defaultValue= {this.state.client}
                                 inputRef={(ref) => {this.client = ref}}
                                 onChange={() => this.handleText()}
                             />
+                            {this.handleError("client")}
                         </FormGroup>
                     </div>
                     </Row> 
@@ -280,24 +378,28 @@ class EditProjectDialog extends Component {
                         <FormGroup>
                         <ControlLabel>Project Start</ControlLabel>
                             <FormControl 
+                                style={this.handleStyle("start_date", "textEntry")}
                                 type="date"
                                 placeholder= "Start Date"
                                 value= {this.state.start_date}
                                 inputRef={(ref) => {this.start_date = ref}}
                                 onChange={() => this.handleText()}
                             />
+                            {this.handleError("start_date")}
                         </FormGroup>
                         </div>
                         <div className="col-md-6">
                         <FormGroup>
                         <ControlLabel>Project Due Date</ControlLabel>
                             <FormControl 
+                                style={this.handleStyle("due_date", "textEntry")}
                                 type="date"
                                 placeholder= "Due Date"
                                 value= {this.state.due_date}
                                 inputRef={(ref) => {this.due_date = ref}}
                                 onChange={() => this.handleText()}
                             />
+                            {this.handleError("due_date")}
                         </FormGroup>
                         </div>
                     </Row>
@@ -307,12 +409,12 @@ class EditProjectDialog extends Component {
                     <FormGroup className="col-md-12">
                         <ControlLabel>Location</ControlLabel>
                         <Select
-                        
+                         style={this.handleStyle("location", "selection")}
                          options={this.state.possible_locations}
                          onChange={this.handleLocation}
                          value={this.state.location}
                          />
-                         
+                         {this.handleError("location")}
                      </FormGroup>
 
  
@@ -335,7 +437,7 @@ class EditProjectDialog extends Component {
                     </Row>
 
                     <ButtonToolbar>
-                        <Button onClick = {this.saveProject} bsStyle="default" round fill>
+                        <Button onClick = {this.handleSubmit} bsStyle="default" round fill>
                              Save Project
                         </Button>
                         <Button onClick={this.props.closePopup} bsStyle="default" round fill>
