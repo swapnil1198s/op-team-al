@@ -107,7 +107,7 @@ class AddEmployeeDialog extends Component {
         this.setState({start_date:this.start_date.value});
         this.setState({availability:this.availability.value});
      }
-
+     
      handleLocation = (location) => {
         this.setState({location});
      }

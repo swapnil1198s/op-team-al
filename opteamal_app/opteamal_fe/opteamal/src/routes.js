@@ -3,6 +3,7 @@ import Dashboard from "./views/Dashboard.jsx";
 import Employees from "./views/Employees.jsx";
 import Projects from "./views/Projects";
 import FindTalent from "./views/FindTalent"
+import System from "./views/System"
 
 
 const dashboardRoutes = [
@@ -32,6 +33,13 @@ const dashboardRoutes = [
     name: "Find Talent",
     icon: "location_searching",
     component: FindTalent,
+    layout: "/admin"
+  },
+  {
+    path: "/settings",
+    name: "System",
+    icon: "settings",
+    component: System,
     layout: "/admin"
   },
 ];
