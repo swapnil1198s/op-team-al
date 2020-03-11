@@ -1,8 +1,9 @@
-
+from django.http import JsonResponse
 from rest_framework.response import Response
 from rest_framework import status, viewsets, filters as rff
 from django_filters.rest_framework import DjangoFilterBackend, filters, ModelChoiceFilter
 import django_filters as df
+from django.db.models import ProtectedError
 
 from .models import Employee,\
                     Project,\
@@ -94,26 +95,84 @@ class LocationsViewSet(viewsets.ModelViewSet):
     queryset = Location.objects.all()
     serializer_class = LocationSerializer
 
+    def destroy(self, *args, **kwargs):
+        try:
+            serializer = self.get_serializer(self.get_object())
+            super().destroy(*args, **kwargs)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except ProtectedError as exception:
+            data = {
+                'code': 'server_error',
+                'message': ('Internal server error.'),
+                'error': {
+                    'type': str(type(exception)),
+                    'message': str(exception)
+                }
+            }
+            return Response(data=data, status=status.HTTP_409_CONFLICT)
+
 class ManagementLevelViewSet(viewsets.ModelViewSet):
     queryset = MangementLevel.objects.all()
     serializer_class = ManagementLevelSerializer
+
+    def destroy(self, *args, **kwargs):
+        try:
+            serializer = self.get_serializer(self.get_object())
+            super().destroy(*args, **kwargs)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except ProtectedError as exception:
+            data = {
+                'code': 'server_error',
+                'message': ('Internal server error.'),
+                'error': {
+                    'type': str(type(exception)),
+                    'message': str(exception)
+                }
+            }
+            return Response(data=data, status=status.HTTP_409_CONFLICT)
 
 class TitleViewSet(viewsets.ModelViewSet):
 
     queryset = Title.objects.all()
     serializer_class = TitleSerializer
 
-    def get_object(self):
-        if self.request.method == 'PUT':
-            obj, created = Title.objects.get_or_create(pk=self.kwargs.get('pk'))
-            return obj
-        else:
-            return super(TitleViewSet, self).get_object()
+    def destroy(self, *args, **kwargs):
+        try:
+            serializer = self.get_serializer(self.get_object())
+            super().destroy(*args, **kwargs)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except ProtectedError as exception:
+            data = {
+                'code': 'server_error',
+                'message': ('Internal server error.'),
+                'error': {
+                    'type': str(type(exception)),
+                    'message': str(exception)
+                }
+            }
+            return Response(data=data, status=status.HTTP_409_CONFLICT)
 
 class TitleEntryViewSet(viewsets.ModelViewSet):
 
     queryset = TitleEntry.objects.all()
     serializer_class = TitleEntrySerializer
+
+    def destroy(self, *args, **kwargs):
+        try:
+            serializer = self.get_serializer(self.get_object())
+            super().destroy(*args, **kwargs)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except ProtectedError as exception:
+            data = {
+                'code': 'server_error',
+                'message': ('Internal server error.'),
+                'error': {
+                    'type': str(type(exception)),
+                    'message': str(exception)
+                }
+            }
+            return Response(data=data, status=status.HTTP_409_CONFLICT)
+
 
 class DesiredLocationViewSet(viewsets.ModelViewSet):
 
@@ -125,15 +184,63 @@ class TalentViewSet(viewsets.ModelViewSet):
     queryset = Talent.objects.all()
     serializer_class = TalentSerializer
 
+    def destroy(self, *args, **kwargs):
+        try:
+            serializer = self.get_serializer(self.get_object())
+            super().destroy(*args, **kwargs)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except ProtectedError as exception:
+            data = {
+                'code': 'server_error',
+                'message': ('Internal server error.'),
+                'error': {
+                    'type': str(type(exception)),
+                    'message': str(exception)
+                }
+            }
+            return Response(data=data, status=status.HTTP_409_CONFLICT)
+
 class TalentEntryViewSet(viewsets.ModelViewSet):
 
     queryset =  TalentEntry.objects.all()
     serializer_class = TalentEntrySerializer
 
+    def destroy(self, *args, **kwargs):
+        try:
+            serializer = self.get_serializer(self.get_object())
+            super().destroy(*args, **kwargs)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except ProtectedError as exception:
+            data = {
+                'code': 'server_error',
+                'message': ('Internal server error.'),
+                'error': {
+                    'type': str(type(exception)),
+                    'message': str(exception)
+                }
+            }
+            return Response(data=data, status=status.HTTP_409_CONFLICT)
+
 class AssignedEntryViewSet(viewsets.ModelViewSet):
 
     queryset =  AssignedEntry.objects.all()
     serializer_class = AssignedEntrySerializer
+
+    def destroy(self, *args, **kwargs):
+        try:
+            serializer = self.get_serializer(self.get_object())
+            super().destroy(*args, **kwargs)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except ProtectedError as exception:
+            data = {
+                'code': 'server_error',
+                'message': ('Internal server error.'),
+                'error': {
+                    'type': str(type(exception)),
+                    'message': str(exception)
+                }
+            }
+            return Response(data=data, status=status.HTTP_409_CONFLICT)
 
 class NumberInFilter(filters.BaseInFilter, filters.NumberFilter):
     pass
@@ -153,6 +260,22 @@ class EmployeeTalentsViewSet(viewsets.ModelViewSet):
     search_fields = ['f_name',]
     #filterset_fields = ['talent_id']
     filter_class = EmployeeTalentFilter
+
+    def destroy(self, *args, **kwargs):
+        try:
+            serializer = self.get_serializer(self.get_object())
+            super().destroy(*args, **kwargs)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except ProtectedError as exception:
+            data = {
+                'code': 'server_error',
+                'message': ('Internal server error.'),
+                'error': {
+                    'type': str(type(exception)),
+                    'message': str(exception)
+                }
+            }
+            return Response(data=data, status=status.HTTP_409_CONFLICT)
 
 
 

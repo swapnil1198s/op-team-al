@@ -41,9 +41,7 @@ class DeleteTitlePopup extends Component {
                 'Content-Type': 'application/json',
             }
         })
-        .then(() => {
-          window.location.reload();
-        })
+        .then((res) => console.log(res.status))
         .catch(console.log)
       };
 
