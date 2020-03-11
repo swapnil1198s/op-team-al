@@ -15,7 +15,9 @@ import { Card } from "../components/Card/Card.jsx";
 import { TalentTable } from "../components/TalentTable/TalentTable.jsx"
 import { TitleTable } from "../components/TitleTable/TitleTable.jsx"
 import { LocationTable } from "../components/LocationTable/LocationTable.jsx"
+import { ManagementLevelTable } from "../components/ManagementLevelTable/ManagementLevelTable.jsx"
 import Button from "../components/CustomButton/CustomButton.jsx";
+import { Tabs } from "@yazanaabed/react-tabs";
 
 import AddTalentPopup from "../components/AddTalentPopup/AddTalentPopup.jsx"
 import EditTalentPopup from "../components/EditTalentPopup/EditTalentPopup.jsx"
@@ -36,9 +38,11 @@ class System extends Component {
     talents: [],
     titles: [],
     locations: [],
+    managementLevels: [],
     talents_count: 0,
     titles_count: 0,
     locations_count: 0,
+    manageLev_count:0,
 
     showAddTalentPopup: false,
     showAddTitlePopup: false,
@@ -144,6 +148,14 @@ class System extends Component {
       this.setState({locations: data })
       this.setState({locations_count: this.state.locations.length})
     })
+
+    const manageLevURL = 'http://localhost:8000/api/managementlevel'; 
+    fetch(manageLevURL)
+    .then(res => res.json())
+    .then((data) => {
+      this.setState({managementLevels: data })
+      this.setState({manageLev_count: this.state.managementLevels.length})
+    })
     .catch(console.log)
   };
 
@@ -152,37 +164,36 @@ class System extends Component {
     const editTalent = <Tooltip id="edit_tooltip">Edit Talent</Tooltip>;
     const editTitle = <Tooltip id="edit_tooltip">Edit Title</Tooltip>;
     const editLoca = <Tooltip id="edit_tooltip">Edit Location</Tooltip>;
+    const editManagement = <Tooltip id="edit_tooltip">Edit Management Level</Tooltip>
     const removeTalent = <Tooltip id="remove_tooltip">Delete Talent</Tooltip>;
     const removeTitle = <Tooltip id="remove_tooltip">Delete Title</Tooltip>;
     const removeLoca = <Tooltip id="remove_tooltip">Delete Location</Tooltip>;
+    const removeManagement = <Tooltip id="remove_tooltip">Delete Management Level</Tooltip>
+
     return (
       <div className="content">
         <Grid fluid>
         {!this.state.showAddTalentPopup && !this.state.showEditTalentPopup && !this.state.showDeleteTalentPopup && !this.state.showAddTitlePopup && !this.state.showEditTitlePopup && !this.state.showDeleteTitlePopup && !this.state.showAddLocationPopup  && !this.state.showEditLocationPopup && !this.state.showDeleteLocationPopup  ?
+        <div>
+          <Col>
+            <h3>System</h3>
+          </Col>
+        
         <Row>
         
-          <div>
-            <Col md={12}>
-              <Row>
-                <Col xsOffset={0} md={3}>
-                    <Button onClick={this.toggleAddTalent.bind(this)} bsStyle="default" round fill>Add Talent</Button>
-                  </Col>
-                
-                <Col md={3}>
-                  <Button onClick={this.toggleAddTitle.bind(this)} bsStyle="default" round fill>Add Title</Button>
-                </Col>
-
-                <Col md={3}>
-                <Button onClick={this.toggleAddLocation.bind(this)} bsStyle="default" round fill>Add Location</Button>
-                </Col>
-              </Row>
-              <br></br>
-            </Col>
-            </div>
-            <br></br>
-            <Col md={3}>
+        <Tabs
+          activeTab={{
+            id: "talents"
+          }}
+        >
+          <Tabs.Tab id="talents" title="Talents">
+            <div style={{ padding: 10 }}>
+            <Col md={4}>
               <Card
                 title="Talent Overview"
+                action={
+                  <Button onClick={this.toggleAddTalent.bind(this)} bsStyle="default" round fill>Add</Button>
+                }
                 category={"Talents ("+this.state.talents_count+")"}
                 ctTableFullWidth
                 ctTableResponsive
@@ -198,11 +209,18 @@ class System extends Component {
                   </Table>
                 }
               />
-            </Col>
-            <Col md={3}>
+              </Col>
+            </div>
+          </Tabs.Tab>
+          <Tabs.Tab id="titles" title="Titles">
+            <div style={{ padding: 10 }}>
+            <Col md={4}>
               <Card
                 title="Title Overview"
                 category={"Titles ("+this.state.titles_count+")"}
+                action={
+                  <Button onClick={this.toggleAddTitle.bind(this)} bsStyle="default" round fill>Add</Button>
+                }
                 ctTableFullWidth
                 ctTableResponsive
                 content={                  
@@ -217,11 +235,18 @@ class System extends Component {
                   </Table>
                 }
               />
-            </Col>
+              </Col>
+            </div>
+          </Tabs.Tab>
+          <Tabs.Tab id="locations" title="Locations">
+            <div style={{ padding: 10 }}>
             <Col md={6}>
               <Card
                 title="Location Overview"
                 category={"Locations ("+this.state.locations_count+")"}
+                action={
+                  <Button onClick={this.toggleAddLocation.bind(this)} bsStyle="default" round fill>Add</Button>
+                }
                 ctTableFullWidth
                 ctTableResponsive
                 content={                  
@@ -240,9 +265,41 @@ class System extends Component {
                   </Table>
                 }
               />
-            </Col>
+              </Col>
+            </div>
+          </Tabs.Tab>
+          <Tabs.Tab id="managementLevels" title="Management Levels">
+            <div style={{ padding: 10 }}>
+            <Col md={4}>
+              <Card
+                title="Management Level Overview"
+                category={"Management Levels ("+this.state.manageLev_count+")"}
+                action={
+                  <Button onClick={this.toggleAddLocation.bind(this)} bsStyle="default" round fill>Add</Button>
+                }
+                ctTableFullWidth
+                ctTableResponsive
+                content={                  
+                  <Table hover>
+                    <thead>
+                      <tr>
+                        <th></th>
+                        <th>Management Level</th> 
+                      </tr>
+                  </thead>
+                      <ManagementLevelTable managementLevels={this.state.managementLevels} closePopupEdit={this.toggleEditTalent.bind(this)} selectedTalentId ={this.state.selectedTalentId} closePopupDel={this.toggleDeleteTalent.bind(this)} selectedTalentId ={this.state.selectedTalentId}/>
+                  </Table>
+                }
+              />
+              </Col>
+            </div>
+          </Tabs.Tab>
+        </Tabs>
+      
+          
             
           </Row>
+          </div>
           : null
         }
 
