@@ -188,7 +188,7 @@ class System extends Component {
         >
           <Tabs.Tab id="talents" title="Talents">
             <div style={{ padding: 10 }}>
-            <Col md={4}>
+            <Col xsOffset={3} md={6}>
               <Card
                 title="Talent Overview"
                 action={
@@ -214,7 +214,7 @@ class System extends Component {
           </Tabs.Tab>
           <Tabs.Tab id="titles" title="Titles">
             <div style={{ padding: 10 }}>
-            <Col md={4}>
+            <Col xsOffset={3} md={6}>
               <Card
                 title="Title Overview"
                 category={"Titles ("+this.state.titles_count+")"}
@@ -240,7 +240,7 @@ class System extends Component {
           </Tabs.Tab>
           <Tabs.Tab id="locations" title="Locations">
             <div style={{ padding: 10 }}>
-            <Col md={6}>
+            <Col xsOffset={3} md={6}>
               <Card
                 title="Location Overview"
                 category={"Locations ("+this.state.locations_count+")"}
@@ -270,7 +270,7 @@ class System extends Component {
           </Tabs.Tab>
           <Tabs.Tab id="managementLevels" title="Management Levels">
             <div style={{ padding: 10 }}>
-            <Col md={4}>
+            <Col xsOffset={3} md={6}>
               <Card
                 title="Management Level Overview"
                 category={"Management Levels ("+this.state.manageLev_count+")"}
