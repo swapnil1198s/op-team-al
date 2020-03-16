@@ -133,7 +133,7 @@ class AddLocationPopup extends Component {
     handleSubmit = (e) => {    
         e.preventDefault();
 
-        const {building, city_name, state, country, continent} = this.state;
+        const {building, city_name, state, country, continent} = this.state
 
         const errors = this.handleValidation(building, city_name, state, country, continent)
 

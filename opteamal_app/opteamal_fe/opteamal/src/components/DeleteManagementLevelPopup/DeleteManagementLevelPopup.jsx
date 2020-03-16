@@ -16,25 +16,25 @@ import Select from 'react-select'
 
 
 
-class DeleteTitlePopup extends Component {
+class DeleteManagementLevelPopup extends Component {
     constructor() {
         super();
         this.textInput = React.createRef();
         this.state = {
-          title:""
+          level:""
         };
     }
 
 
     componentDidMount() {
         
-        this.setState({title:this.props.title[0].title})
+        this.setState({level:this.props.level[0].level})
 
       }
 
-    deleteTitle = () => {
+    deleteLevel = () => {
 
-        fetch('http://localhost:8000/api/titles/'+this.props.title[0].id + '/', {
+        fetch('http://localhost:8000/api/managementlevel/'+this.props.level[0].id + '/', {
             method: 'DELETE',
             headers: {
                 'Accept': 'application/json',
@@ -60,11 +60,11 @@ class DeleteTitlePopup extends Component {
           <Row>
             <Col xsOffset={4} md={4}>
               <Card
-                title={"Are you sure you want to delete " + this.props.title[0].title + "?"}
+                title={"Are you sure you want to delete " + this.props.level[0].level + "?"}
                 content={
                   <form>
                    <ButtonToolbar>
-                        <Button onClick = {this.deleteTitle} type="button" bsStyle="default" round fill>
+                        <Button onClick = {this.deleteLevel} type="button" bsStyle="default" round fill>
                              Yes
                         </Button>
                         <Button onClick={this.props.closePopup} bsStyle="default" round fill>
@@ -83,4 +83,4 @@ class DeleteTitlePopup extends Component {
   }
 }
 
-export default DeleteTitlePopup;
+export default DeleteManagementLevelPopup;

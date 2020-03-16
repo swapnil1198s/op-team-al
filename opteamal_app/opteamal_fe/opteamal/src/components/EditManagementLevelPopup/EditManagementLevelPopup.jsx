@@ -18,12 +18,12 @@ import Icon from '@material-ui/core/Icon';
 
 
 
-class EditTalentPopup extends Component {
+class EditManagementLevelPopup extends Component {
     constructor() {
         super();
         this.textInput = React.createRef();
         this.state = { 
-          talent:"",
+          level:"",
           errors:[]
         };
     }
@@ -35,20 +35,20 @@ class EditTalentPopup extends Component {
     }
 
     handleText() {
-        this.setState({talent:this.talent_name.value});
+        this.setState({level:this.level.value});
      }
 
-    saveTalent() {
+    saveLevel() {
     
 
-        fetch('http://localhost:8000/api/talents/'+this.props.talent[0].id + '/', {
+        fetch('http://localhost:8000/api/managementlevel/'+this.props.level[0].id + '/', {
             method: 'PUT',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                talent: this.state.talent
+                level: this.state.level
             })
         }).then(res => res.json())
         .then(() => {
@@ -59,15 +59,15 @@ class EditTalentPopup extends Component {
       };
 
 
-      handleValidation(talent){
+      handleValidation(level){
         const errors = []
         var errorCount = 0
 
-        if (talent.length == 0){
-            errors["talent"]="*Talent required"
+        if (level.length == 0){
+            errors["level"]="*Level required"
             errorCount++
         }else{
-            errors["talent"]="No Error"
+            errors["level"]="No Error"
         }
 
         errors["errorCount"]=errorCount
@@ -93,15 +93,15 @@ class EditTalentPopup extends Component {
     handleSubmit = (e) => {    
         e.preventDefault();
 
-        const talent = this.state.talent;
+        const level = this.state.level;
 
-        const errors = this.handleValidation(talent)
+        const errors = this.handleValidation(level)
 
         if (errors["errorCount"] > 0) {
             this.setState({ errors });
             return;
         }else{
-            this.saveTalent();
+            this.saveLevel();
         }
     };
 
@@ -113,21 +113,21 @@ class EditTalentPopup extends Component {
           <Row>
             <Col xsOffset={4} md={4}>
               <Card
-                title="Edit Talent"
+                title="Edit Management Level"
                 content={
                   <form>
                    <Row>
                         <div className="col-md-6">
                         <FormGroup>
                             <FormControl 
-                                style={this.handleStyle("talent")}
-                                type="text"
-                                placeholder= "Talent"
-                                defaultValue= {this.props.talent[0].talent}
-                                inputRef={(ref) => {this.talent_name = ref}}
+                                style={this.handleStyle("level")}
+                                type="level"
+                                placeholder= "Level"
+                                defaultValue= {this.props.level[0].level}
+                                inputRef={(ref) => {this.level = ref}}
                                 onChange={() => this.handleText()}
                             />
-                            {this.handleError("talent")}
+                            {this.handleError("level")}
                         </FormGroup>
                         </div>
                     </Row>
@@ -152,4 +152,4 @@ class EditTalentPopup extends Component {
   }
 }
 
-export default EditTalentPopup;
+export default EditManagementLevelPopup;

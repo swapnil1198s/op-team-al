@@ -28,6 +28,9 @@ import DeleteTitlePopup from "../components/DeleteTitlePopup/DeleteTitlePopup.js
 import AddLocationPopup from "../components/AddLocationPopup/AddLocationPopup.jsx"
 import EditLocationPopup from "../components/EditLocationPopup/EditLocationPopup.jsx"
 import DeleteLocationPopup from "../components/DeleteLocationPopup/DeleteLocationPopup.jsx"
+import AddManagementLevelPopup from "../components/AddManagementLevelPopup/AddManagementLevelPopup.jsx"
+import EditManagementLevelPopup from "../components/EditManagementLevelPopup/EditManagementLevelPopup.jsx"
+import DeleteManagementLevelPopup from "../components/DeleteManagementLevelPopup/DeleteManagementLevelPopup.jsx"
 
 
 
@@ -47,15 +50,19 @@ class System extends Component {
     showAddTalentPopup: false,
     showAddTitlePopup: false,
     showAddLocationPopup: false,
+    showAddLevelPopup: false,
     showEditTalentPopup: false,
     showEditTitlePopup: false,
     showEditLocationPopup: false,
+    showEditLevelPopup: false,
     showDeleteTalentPopup: false,
     showDeleteTitlePopup: false,
     showDeleteLocationPopup: false,
+    showDeleteLevelPopup: false,
     selectedTalent: null,
     selectedTitle: null,
-    selectedLocation: null
+    selectedLocation: null,
+    selectedLevel: null
   }
 
   toggleAddTalent() {
@@ -73,6 +80,12 @@ class System extends Component {
   toggleAddLocation() {
     this.setState({  
       showAddLocationPopup: !this.state.showAddLocationPopup  
+   });  
+  }
+
+  toggleAddLevel() {
+    this.setState({  
+      showAddLevelPopup: !this.state.showAddLevelPopup  
    });  
   }
 
@@ -100,6 +113,14 @@ class System extends Component {
     this.setState({showEditLocationPopup: !this.state.showEditLocationPopup})
   }
 
+  toggleEditLevel(level) {
+    console.log(level)
+    if (typeof level != "undefined"){
+        this.setState({ selectedLevel: level})
+    }
+    this.setState({showEditLevelPopup: !this.state.showEditLevelPopup})
+  }
+
   toggleDeleteTalent(talent) {
     console.log(talent)
     if (typeof talent != "undefined"){
@@ -122,6 +143,14 @@ class System extends Component {
         this.setState({ selectedLocation: location})
     }
     this.setState({showDeleteLocationPopup: !this.state.showDeleteLocationPopup})
+  }
+
+  toggleDeleteLevel(level) {
+    console.log(level)
+    if (typeof level != "undefined"){
+        this.setState({ selectedLevel: level})
+    }
+    this.setState({showDeleteLevelPopup: !this.state.showDeleteLevelPopup})
   }
   
   componentDidMount() {
@@ -164,16 +193,16 @@ class System extends Component {
     const editTalent = <Tooltip id="edit_tooltip">Edit Talent</Tooltip>;
     const editTitle = <Tooltip id="edit_tooltip">Edit Title</Tooltip>;
     const editLoca = <Tooltip id="edit_tooltip">Edit Location</Tooltip>;
-    const editManagement = <Tooltip id="edit_tooltip">Edit Management Level</Tooltip>
+    const editLevel = <Tooltip id="edit_tooltip">Edit Management Level</Tooltip>
     const removeTalent = <Tooltip id="remove_tooltip">Delete Talent</Tooltip>;
     const removeTitle = <Tooltip id="remove_tooltip">Delete Title</Tooltip>;
     const removeLoca = <Tooltip id="remove_tooltip">Delete Location</Tooltip>;
-    const removeManagement = <Tooltip id="remove_tooltip">Delete Management Level</Tooltip>
+    const removeLevel = <Tooltip id="remove_tooltip">Delete Management Level</Tooltip>
 
     return (
       <div className="content">
         <Grid fluid>
-        {!this.state.showAddTalentPopup && !this.state.showEditTalentPopup && !this.state.showDeleteTalentPopup && !this.state.showAddTitlePopup && !this.state.showEditTitlePopup && !this.state.showDeleteTitlePopup && !this.state.showAddLocationPopup  && !this.state.showEditLocationPopup && !this.state.showDeleteLocationPopup  ?
+        {!this.state.showAddTalentPopup && !this.state.showEditTalentPopup && !this.state.showDeleteTalentPopup && !this.state.showAddTitlePopup && !this.state.showEditTitlePopup && !this.state.showDeleteTitlePopup && !this.state.showAddLocationPopup  && !this.state.showEditLocationPopup && !this.state.showDeleteLocationPopup && !this.state.showAddLevelPopup && !this.state.showEditLevelPopup && !this.state.showDeleteLevelPopup  ?
         <div>
           <Col>
             <h3>System</h3>
@@ -275,7 +304,7 @@ class System extends Component {
                 title="Management Level Overview"
                 category={"Management Levels ("+this.state.manageLev_count+")"}
                 action={
-                  <Button onClick={this.toggleAddLocation.bind(this)} bsStyle="default" round fill>Add</Button>
+                  <Button onClick={this.toggleAddLevel.bind(this)} bsStyle="default" round fill>Add</Button>
                 }
                 ctTableFullWidth
                 ctTableResponsive
@@ -287,7 +316,7 @@ class System extends Component {
                         <th>Management Level</th> 
                       </tr>
                   </thead>
-                      <ManagementLevelTable managementLevels={this.state.managementLevels} closePopupEdit={this.toggleEditTalent.bind(this)} selectedTalentId ={this.state.selectedTalentId} closePopupDel={this.toggleDeleteTalent.bind(this)} selectedTalentId ={this.state.selectedTalentId}/>
+                      <ManagementLevelTable managementLevels={this.state.managementLevels} closePopupEdit={this.toggleEditLevel.bind(this)} selectedLevelId ={this.state.selectedLevelId} closePopupDel={this.toggleDeleteLevel.bind(this)} selectedLevelId ={this.state.selectedLevelId}/>
                   </Table>
                 }
               />
@@ -375,7 +404,31 @@ class System extends Component {
           />
         </Row>  
         : null  
-        }    
+        }
+        {this.state.showAddLevelPopup ?  
+        <Row>
+          <AddManagementLevelPopup 
+            closePopup={this.toggleAddLevel.bind(this)} level={this.state.selectedLevel}  
+          />
+        </Row>  
+        : null  
+        }  
+        {this.state.showEditLevelPopup ?  
+        <Row>
+          <EditManagementLevelPopup 
+            closePopup={this.toggleEditLevel.bind(this)} level={this.state.selectedLevel}  
+          />
+        </Row>  
+        : null  
+        }
+        {this.state.showDeleteLevelPopup ?  
+        <Row>
+          <DeleteManagementLevelPopup 
+            closePopup={this.toggleDeleteLevel.bind(this)} level={this.state.selectedLevel}  
+          />
+        </Row>  
+        : null  
+        }        
       </div>
     );
   }
