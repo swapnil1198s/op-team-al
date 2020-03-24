@@ -1,5 +1,6 @@
 
-import Dashboard from "./views/Dashboard.jsx";
+import EmployeesDashboard from "./views/EmployeeDashboard.jsx";
+import ProjectsDashboard from "./views/ProjectsDashboard.jsx";
 import Employees from "./views/Employees.jsx";
 import Projects from "./views/Projects";
 import FindTalent from "./views/FindTalent"
@@ -8,10 +9,17 @@ import System from "./views/System"
 
 const dashboardRoutes = [
   {
-    path: "/dashboard",
+    path: "/employees_dashboard",
     name: "Home",
     icon: "dashboard",
-    component: Dashboard,
+    component: EmployeesDashboard,
+    layout: "/admin"
+  },
+  {
+    path: "/projects_dashboard",
+    name: "Home",
+    icon: "dashboard",
+    component: ProjectsDashboard,
     layout: "/admin"
   },
   {

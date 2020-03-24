@@ -20,7 +20,7 @@
     "react-notification-system": "0.2.17",
     "react-radio-buttons": "1.2.2",
     "react-router": "5.0.0",
-    "react-router-dom": "5.0.0",
+    "react-router-dom": "^5.0.0",
     "react-scripts": "^3.4.0",
     "react-select": "3.0.8",
     "react-toggle": "4.0.2"

@@ -479,35 +479,35 @@ const iconsArray = [
 //
 // Data for Pie Chart
 var dataPie = {
-  labels: ["40%", "20%", "40%"],
-  series: [40, 20, 40]
+  labels: ["10", "5", "5","4"],
+  series: [10,5,5,4]
 };
 var legendPie = {
-  names: ["Open", "Bounce", "Unsubscribe"],
+  names: ["Java", "Python", "C#", "JavaScript"],
   types: ["info", "danger", "warning"]
 };
 
 // Data for Line Chart
 var dataSales = {
   labels: [
-    "9:00AM",
-    "12:00AM",
-    "3:00PM",
-    "6:00PM",
-    "9:00PM",
-    "12:00PM",
-    "3:00AM",
-    "6:00AM"
+    "Jul 2016",
+    "Jan 2017",
+    "July 2017",
+    "Jan 2018",
+    "July 2018",
+    "Jan 2019",
+    "Jul 2019",
+    "Jan 2020"
+    
   ],
   series: [
-    [287, 385, 490, 492, 554, 586, 698, 695],
-    [67, 152, 143, 240, 287, 335, 435, 437],
-    [23, 113, 67, 108, 190, 239, 307, 308]
+    [67, 152, 143, 240, 287, 335, 400, 437],
+    [69, 163, 147, 208, 290, 309, 397, 410]
   ]
 };
 var optionsSales = {
   low: 0,
-  high: 800,
+  high: 500,
   showArea: false,
   height: "245px",
   axisX: {
@@ -534,7 +534,7 @@ var responsiveSales = [
   ]
 ];
 var legendSales = {
-  names: ["Open", "Click", "Click Second Time"],
+  names: ["Needed", "Available"],
   types: ["info", "danger", "warning"]
 };
 
