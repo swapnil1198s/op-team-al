@@ -19,8 +19,9 @@ router.register(r'api/search', api.EmployeeTalentsViewSet)
 
 
 
+
 urlpatterns = [
      path('', include(router.urls)),
-
+     path(r'api/employee-count', api.EmployeeCountView.as_view(), name='Employee')
 ]
 

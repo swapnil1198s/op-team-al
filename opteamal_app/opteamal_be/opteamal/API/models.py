@@ -49,6 +49,9 @@ class Project(models.Model):
     project_start  = models.DateField()
     project_due = models.DateField()
     client = models.CharField(max_length=20)
+    count_needed = models.IntegerField()
+    current_count = models.IntegerField()
+
 
 class AssignedEntry(models.Model):
 
@@ -78,6 +81,7 @@ class TalentEntry(models.Model):
     talent =  models.ForeignKey(Talent, related_name="talent_name", on_delete=models.PROTECT)
 
 class EmployeeTalentView(models.Model):
+
     id = models.IntegerField(primary_key=True)
     f_name = models.CharField(max_length=20)
     l_name = models.CharField(max_length=20)

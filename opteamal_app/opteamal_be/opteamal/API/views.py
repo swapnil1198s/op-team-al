@@ -1,9 +1,11 @@
-from django.http import JsonResponse
+
 from rest_framework.response import Response
 from rest_framework import status, viewsets, filters as rff
 from django_filters.rest_framework import DjangoFilterBackend, filters, ModelChoiceFilter
 import django_filters as df
 from django.db.models import ProtectedError
+from rest_framework.renderers import JSONRenderer
+from rest_framework.views import APIView
 
 from .models import Employee,\
                     Project,\
@@ -28,7 +30,6 @@ from .serializer import EmployeeSerializer,\
                         TalentEntrySerializer, \
                         AssignedEntrySerializer, \
                         EmployeeTalentsViewSerializer
-
 
 """
 If you wanna run a sql statement
@@ -61,9 +62,11 @@ class EmployeeFilter(df.FilterSet):
     location = ModelChoiceFilter(queryset=Location.objects.all())
     title_id_in = NumberInFilter(field_name='title', lookup_expr='in')
     location_id_in = NumberInFilter(field_name='location', lookup_expr='in')
+    availability_gte = df.DateTimeFilter(field_name="availability", lookup_expr='gte')
+    availability_lte = df.DateTimeFilter(field_name="availability", lookup_expr='lte')
     class Meta:
         model = Employee
-        fields = ['title_id_in', 'location_id_in']
+        fields = ['title_id_in', 'location_id_in', 'availability_gte', 'availability_lte']
 
 class EmployeesViewSet(viewsets.ModelViewSet):
     queryset = Employee.objects.all()
@@ -87,9 +90,23 @@ class EmployeesViewSet(viewsets.ModelViewSet):
             # Return this if request method is not POST
         return Response({'key': 'value'}, status=status.HTTP_200_OK)
 
+
+
+class ProjectFilter(df.FilterSet):
+    duedate_gte = df.DateTimeFilter(field_name="project_due", lookup_expr='gte')
+    duedate_lte = df.DateTimeFilter(field_name="project_due", lookup_expr='lte')
+
+    class Meta:
+        model = Project
+        fields = ['duedate_gte', 'duedate_lte']
+
+
+
 class ProjectsViewSet(viewsets.ModelViewSet):
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
+    filter_backends = (DjangoFilterBackend,)
+    filter_class = ProjectFilter
 
 class LocationsViewSet(viewsets.ModelViewSet):
     queryset = Location.objects.all()
@@ -248,6 +265,7 @@ class NumberInFilter(filters.BaseInFilter, filters.NumberFilter):
 class EmployeeTalentFilter(df.FilterSet):
     title_id_in = NumberInFilter(field_name='title_id', lookup_expr='in')
 
+
     class Meta:
         model = EmployeeTalentView
         fields = ['title_id_in', ]
@@ -278,7 +296,13 @@ class EmployeeTalentsViewSet(viewsets.ModelViewSet):
             return Response(data=data, status=status.HTTP_409_CONFLICT)
 
 
+class EmployeeCountView(APIView):
+    """
+    A view that returns the count of active users in JSON.
+    """
+    renderer_classes = [JSONRenderer]
 
-
-
-
+    def get(self, request, format=None):
+        employee_count = Employee.objects.all().count()
+        content = {'employee_count': employee_count}
+        return Response(content)

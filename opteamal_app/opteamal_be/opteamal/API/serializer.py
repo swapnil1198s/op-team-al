@@ -173,3 +173,4 @@ class EmployeeTalentsViewSerializer(serializers.ModelSerializer):
     class Meta:
         model = EmployeeTalentView
         fields =('__all__')
+

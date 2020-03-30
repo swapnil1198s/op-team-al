@@ -10,7 +10,7 @@ export class EmployeeTable extends Component {
   constructor() {
     super();
     this.state = {
-      clicked_id: null,
+      clicked_id: null
     };
   }
   

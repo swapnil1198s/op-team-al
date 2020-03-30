@@ -11,6 +11,10 @@ import "./assets/css/pe-icon-7-stroke.css";
 
 import AdminLayout from "./layouts/Admin.jsx";
 
+import 'react-app-polyfill/ie9';
+import 'react-app-polyfill/ie11';
+import 'react-app-polyfill/stable';
+
 ReactDOM.render(
   <BrowserRouter>
     <Switch>
