@@ -16,6 +16,7 @@ router.register(r'api/talents', api.TalentViewSet)
 router.register(r'api/talent/entry', api.TalentEntryViewSet)
 router.register(r'api/project/assigned', api.AssignedEntryViewSet)
 router.register(r'api/search', api.EmployeeTalentsViewSet)
+router.register(r'api/talentgroup', api.TalentGroupViewSet)
 
 
 

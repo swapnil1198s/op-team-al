@@ -17,7 +17,8 @@ from .models import Employee,\
                     Talent,\
                     TalentEntry, \
                     AssignedEntry, \
-                    EmployeeTalentView
+                    EmployeeTalentView, \
+                    TalentGroup
 
 from .serializer import EmployeeSerializer,\
                         ProjectSerializer,\
@@ -29,7 +30,8 @@ from .serializer import EmployeeSerializer,\
                         TalentSerializer, \
                         TalentEntrySerializer, \
                         AssignedEntrySerializer, \
-                        EmployeeTalentsViewSerializer
+                        EmployeeTalentsViewSerializer, \
+                        TalentGroupSerializer
 
 """
 If you wanna run a sql statement
@@ -306,3 +308,26 @@ class EmployeeCountView(APIView):
         employee_count = Employee.objects.all().count()
         content = {'employee_count': employee_count}
         return Response(content)
+
+
+class TalentGroupViewSet(viewsets.ModelViewSet):
+    queryset = TalentGroup.objects.all()
+    serializer_class = TalentGroupSerializer
+
+    def destroy(self, *args, **kwargs):
+        try:
+            serializer = self.get_serializer(self.get_object())
+            super().destroy(*args, **kwargs)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except ProtectedError as exception:
+            data = {
+                'code': 'server_error',
+                'message': ('Internal server error.'),
+                'error': {
+                    'type': str(type(exception)),
+                    'message': str(exception)
+                }
+            }
+            return Response(data=data, status=status.HTTP_409_CONFLICT)
+
+

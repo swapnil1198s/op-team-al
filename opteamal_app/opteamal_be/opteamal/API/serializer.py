@@ -9,7 +9,8 @@ from .models import Employee,\
                     Talent, \
                     TalentEntry, \
                     AssignedEntry, \
-                    EmployeeTalentView
+                    EmployeeTalentView, \
+                    TalentGroup
 
 
 class TitleSerializer(serializers.ModelSerializer):
@@ -173,4 +174,18 @@ class EmployeeTalentsViewSerializer(serializers.ModelSerializer):
     class Meta:
         model = EmployeeTalentView
         fields =('__all__')
+
+class TalentGroupSerializer(serializers.ModelSerializer):
+    title = TitleSerializer(read_only=True)
+    talent = TalentSerializer(read_only=True)
+    title_id = serializers.IntegerField(write_only=True)
+    talent_id = serializers.IntegerField(write_only=True)
+    class Meta:
+        model = TalentGroup
+        fields =( 'id',
+                  'title_id',
+                  'title',
+                  'talent_id',
+                  'talent'
+                 )
 

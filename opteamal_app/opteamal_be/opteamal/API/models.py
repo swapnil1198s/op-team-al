@@ -10,9 +10,6 @@ class Location(models.Model):
     continent = models.CharField(max_length=50)
     building = models.CharField(max_length=50)
 
-class Talent(models.Model):
-
-    skill = models.CharField(max_length=50)
 
 class MangementLevel(models.Model):
 
@@ -23,6 +20,17 @@ class Title(models.Model):
 
     id = models.AutoField(primary_key=True)
     title = models.CharField(max_length=25)
+
+class Talent(models.Model):
+
+    id = models.AutoField(primary_key=True)
+    talent = models.CharField(max_length=50)
+
+class TalentGroup(models.Model):
+
+    id = models.AutoField(primary_key=True)
+    talent = models.ForeignKey(Talent, related_name="talent_group", on_delete=models.PROTECT)
+    title = models.ForeignKey(Title, related_name="title_group",  on_delete=models.PROTECT)
 
 class Employee(models.Model):
 
@@ -37,7 +45,6 @@ class Employee(models.Model):
     location = models.ForeignKey(Location, on_delete=models.PROTECT)
     remote_work = models.BooleanField()
     relocate = models.BooleanField()
-
 
 
 class Project(models.Model):
@@ -69,11 +76,6 @@ class DesiredLocation(models.Model):
     id = models.AutoField(primary_key=True)
     location = models.ForeignKey(Location, related_name="locations", on_delete=models.PROTECT)
     employee = models.ForeignKey(Employee, related_name="desired_locations", on_delete=models.PROTECT)
-
-class Talent(models.Model):
-
-    id = models.AutoField(primary_key=True)
-    talent = models.CharField(max_length=50)
 
 class TalentEntry(models.Model):
 
