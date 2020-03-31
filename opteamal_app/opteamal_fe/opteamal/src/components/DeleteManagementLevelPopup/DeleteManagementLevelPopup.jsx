@@ -21,7 +21,8 @@ class DeleteManagementLevelPopup extends Component {
         super();
         this.textInput = React.createRef();
         this.state = {
-          level:""
+          level:"",
+          error:""
         };
     }
 
@@ -42,7 +43,15 @@ class DeleteManagementLevelPopup extends Component {
             }
         })
         .then(() => {
-          window.location.reload();
+          fetch('http://localhost:8000/api/managementlevel/'+this.props.level[0].id + '/', {
+            }).then(res => res.json())
+            .then((data) => {
+              if(data.id != null){
+                this.setState({error: "Error: Instances depend on this. Edit/delete those instances first."})
+              }else{
+                window.location.reload();
+              }
+            })
         })
         .catch(console.log)
       };
@@ -72,6 +81,7 @@ class DeleteManagementLevelPopup extends Component {
                         </Button>
                     </ButtonToolbar>
                     <div className="clearfix" />
+                    <br></br><text style={{color: "red"}}>{this.state.error}</text>
                   </form>
                 }
               />
