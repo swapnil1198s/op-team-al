@@ -24,6 +24,9 @@ class EditTitlePopup extends Component {
         this.textInput = React.createRef();
         this.state = { 
           title:"",
+          talents:[],
+          talentGroups:[],
+          possible_talents:[],
           errors:[]
         };
     }
@@ -34,9 +37,115 @@ class EditTitlePopup extends Component {
         }
     }
 
+    componentDidMount() {
+        
+      fetch('http://localhost:8000/api/talentgroup/')
+      .then(res => res.json())
+      .then((data) => {
+          data.forEach(group => {
+            if(group.title.id == this.props.title[0].id){
+              this.state.talentGroups.push({"value":group.talent.id, "label":group.id})
+              this.state.talents.push({"value":group.talent.id, "label":group.talent.talent})
+            }
+          })
+      })
+      .catch(console.log)
+
+      fetch('http://localhost:8000/api/talents/')
+      .then(res => res.json())
+      .then((data) => {
+          let talents = data.map(opt => ({ value: opt.id, label: opt.talent }));
+          this.setState({possible_talents:talents}); 
+      })
+      .catch(console.log)
+      
+      this.setState({title: this.props.title[0].title})
+    }
+
     handleText() {
         this.setState({title:this.title_name.value});
      }
+
+     handleTalents = (talents) => {
+      this.setState({talents})
+    }
+
+    createTalentGroups = (title) => {
+        
+      const new_talents = this.state.talents
+      const current_groups = this.state.talentGroups
+      let add_groups = []
+      let delete_groups = []
+      let already_exist = false
+      let not_deleted = false
+
+      
+
+
+      new_talents.forEach(function(new_talent){
+          
+          already_exist = false
+          current_groups.forEach(function(old_group){
+              if(new_talent.value == old_group.value){
+                  already_exist = true
+              }
+          });
+          if(!already_exist){
+              add_groups.push(new_talent)
+          }    
+      });
+
+      current_groups.forEach(function(old_group){
+
+          not_deleted = false
+          new_talents.forEach(function(new_talent){
+              if(new_talent.value == old_group.value){
+                  not_deleted = true               
+              }
+          });
+          if(!not_deleted){
+              delete_groups.push(old_group)
+          } 
+
+      });
+
+      console.log(delete_groups)
+      console.log(add_groups)
+
+      
+      for (var i = 0; i < add_groups.length; i++) {
+          fetch('http://localhost:8000/api/talentgroup/', {
+              method: 'POST',
+              headers: {
+                  'Accept': 'application/json',
+                  'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                  talent_id: add_groups[i].value,
+                  title_id : title.id
+              })
+          }).then(res => res.json())
+          .then((data) => {
+              console.log(data)
+          }).catch(console.log)
+
+     }
+
+
+     for (var i = 0; i < delete_groups.length; i++) {
+
+          fetch('http://localhost:8000/api/talentgroup/'+ delete_groups[i].label, {
+              method: 'DELETE',
+              headers: {
+                  'Accept': 'application/json',
+                  'Content-Type': 'application/json',
+              } 
+          }).then().catch(console.log)
+
+      }
+      window.location.reload()
+  
+  }
 
     saveTitle() {
     
@@ -51,8 +160,9 @@ class EditTitlePopup extends Component {
                 title: this.state.title
             })
         }).then(res => res.json())
-        .then(() => {
-          window.location.reload()
+        
+        .then((data) => {
+          this.createTalentGroups(data)
         })
             
         .catch(console.log)
@@ -117,8 +227,9 @@ class EditTitlePopup extends Component {
                 content={
                   <form>
                    <Row>
-                        <div className="col-md-6">
+                        <div className="col-md-12">
                         <FormGroup>
+                          <ControlLabel>Title</ControlLabel>
                             <FormControl 
                                 style={this.handleStyle("title")}
                                 type="text"
@@ -129,6 +240,17 @@ class EditTitlePopup extends Component {
                             />
                             {this.handleError("title")}
                         </FormGroup>
+                        <FormGroup className="col-md-12">
+                            <ControlLabel>Talents</ControlLabel>
+                            <Select
+                                defaultValue={[]}
+                                isMulti
+                                name="talents"
+                                options={this.state.possible_talents}
+                                onChange={this.handleTalents}
+                                value={this.state.talents}
+                            />
+                        </FormGroup> 
                         </div>
                     </Row>
 
