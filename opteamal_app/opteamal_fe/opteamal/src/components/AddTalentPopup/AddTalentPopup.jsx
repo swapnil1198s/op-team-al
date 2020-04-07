@@ -24,6 +24,8 @@ class AddTalentPopup extends Component {
         this.textInput = React.createRef();
         this.state = { 
           talent:"",
+          titles:[],
+          possible_titles:[],
           errors:[]
         };
     }
@@ -34,9 +36,47 @@ class AddTalentPopup extends Component {
         }
     }
 
+    componentDidMount() {
+        
+      fetch('http://localhost:8000/api/titles/')
+      .then(res => res.json())
+      .then((data) => {
+          let titles = data.map(opt => ({ value: opt.id, label: opt.title }));
+          this.setState({possible_titles:titles}); 
+      })
+      .catch(console.log)
+    }
+
     handleText() {
         this.setState({talent:this.talent_name.value});
      }
+
+     handleTitles = (titles) => {
+      this.setState({titles})
+    }
+
+    createTalentGroups = (talent) => {
+        
+      this.state.titles.forEach(function(title) {
+          console.log(title.label);
+          console.log(talent.id)
+         
+          fetch('http://localhost:8000/api/talentgroup/', {
+              method: 'POST',
+              headers: {
+                  'Accept': 'application/json',
+                  'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                  talent_id: talent.id,
+                  title_id : title.value
+              })
+          }).then(res => res.json()).catch(console.log)
+  
+      });
+      window.location.reload()
+
+    }
 
     createTalent() {
     
@@ -51,8 +91,8 @@ class AddTalentPopup extends Component {
                 talent: this.state.talent
             })
         }).then(res => res.json())
-        .then(() => {
-          window.location.reload()
+        .then((data) => {
+          this.createTalentGroups(data)
         })
             
         .catch(console.log)
@@ -117,8 +157,9 @@ class AddTalentPopup extends Component {
                 content={
                   <form>
                    <Row>
-                        <div className="col-md-6">
+                        <div className="col-md-12">
                         <FormGroup>
+                          <ControlLabel>Talent</ControlLabel>
                             <FormControl 
                                 style={this.handleStyle("talent")}
                                 type="text"
@@ -129,6 +170,16 @@ class AddTalentPopup extends Component {
                             />
                             {this.handleError("talent")}
                         </FormGroup>
+                        <FormGroup className="col-md-12">
+                            <ControlLabel>Titles</ControlLabel>
+                            <Select
+                                defaultValue={[]}
+                                isMulti
+                                name="titles"
+                                options={this.state.possible_titles}
+                                onChange={this.handleTitles}
+                            />
+                        </FormGroup>   
                         </div>
                     </Row>
 
