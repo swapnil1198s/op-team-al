@@ -47,8 +47,9 @@ class AddLocationPopup extends Component {
      }
 
     createLocation() {
-    
-
+        
+        let building = this.state.building
+        console.log(building)
         fetch('http://localhost:8000/api/locations/', {
             method: 'POST',
             headers: {
@@ -56,22 +57,23 @@ class AddLocationPopup extends Component {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                building: this.state.building,
+                building: building,
                 city_name: this.state.city_name,
                 state: this.state.state,
                 country: this.state.country,
                 continent: this.state.continent
             })
-        }).then(res => res.json())
+        }).then(res =>console.log(res.json()))
         .then(() => {
-          window.location.reload()
+            
+          //window.location.reload()
         })
             
         .catch(console.log)
-      };
+      }
 
 
-      handleValidation(building, city_name, state, country, continent){
+      handleValidation = (building, city_name, state, country, continent) =>{
         const errors = []
         var errorCount = 0
 
@@ -133,9 +135,9 @@ class AddLocationPopup extends Component {
     handleSubmit = (e) => {    
         e.preventDefault();
 
-        const {building, city_name, state, country, continent} = this.state
-
-        const errors = this.handleValidation(building, city_name, state, country, continent)
+        
+        console.log(this.state.building)
+        const errors = this.handleValidation(this.building.value, this.city_name.value, this.state.value, this.country.value, this.continent.value)
 
         if (errors["errorCount"] > 0) {
             this.setState({ errors });
@@ -143,7 +145,7 @@ class AddLocationPopup extends Component {
         }else{
             this.createLocation();
         }
-    };
+    }
 
   render() {
     const {errors} = this.state;

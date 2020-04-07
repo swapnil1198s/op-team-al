@@ -1,19 +1,19 @@
 
 import React, { Component } from "react";
-import { Row, Col } from "react-bootstrap";
+import { Row, Col, Button } from "react-bootstrap";
 
 export class StatsCard extends Component {
   render() {
     return (
-      <div className="card card-stats">
+      <Button onClick={this.props.switchDashboard} className={this.props.btn_class}>
         <div className="content">
           <Row>
-            <Col xs={5}>
+            <Col className= "stats-col" xs={5} md={5}>
               <div className="icon-big text-center icon-warning">
                 {this.props.bigIcon}
               </div>
             </Col>
-            <Col xs={7}>
+            <Col className= "stats-col" xs={7}>
               <div className="numbers">
                 <p>{this.props.statsText}</p>
                 {this.props.statsValue}
@@ -27,7 +27,7 @@ export class StatsCard extends Component {
             </div>
           </div>
         </div>
-      </div>
+      </Button>
     );
   }
 }

@@ -23,6 +23,7 @@ router.register(r'api/talentgroup', api.TalentGroupViewSet)
 
 urlpatterns = [
      path('', include(router.urls)),
-     path(r'api/employee-count', api.EmployeeCountView.as_view(), name='Employee')
+     path(r'api/employee-count', api.EmployeeCountView.as_view(), name='Employee'),
+     path(r'api/project-count', api.ProjectCountView.as_view(), name='Project')
 ]
 

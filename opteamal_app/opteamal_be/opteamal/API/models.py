@@ -1,5 +1,5 @@
 from django.db import models
-
+from datetime import *
 # Create your models here.
 
 class Location(models.Model):
@@ -45,6 +45,13 @@ class Employee(models.Model):
     location = models.ForeignKey(Location, on_delete=models.PROTECT)
     remote_work = models.BooleanField()
     relocate = models.BooleanField()
+
+    @property
+    def is_free(self):
+        if self.availability < date.today():
+            return True
+        else:
+            return False
 
 
 class Project(models.Model):

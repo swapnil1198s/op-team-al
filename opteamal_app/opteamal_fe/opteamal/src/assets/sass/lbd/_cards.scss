@@ -42,6 +42,7 @@
     }
     &:hover .btn-hover{
         @include opacity(1);
+        color: green($color: #000000);
     }
     .content{
         padding: 15px 15px 10px 15px;
@@ -203,7 +204,8 @@
     }
 }
 
-.card-stats{
+.card-stats-active{
+    min-width: 500px;
     .icon-big{
         font-size: 3em;
         min-height: 64px;
@@ -219,4 +221,25 @@
            margin: 0;
         }
     }
+
+}
+.card-stats{
+    border: none;
+    min-width: 500px;
+    .icon-big{
+        font-size: 3em;
+        min-height: 64px;
+        i{
+            font-weight: bold;
+            line-height: 59px;
+        }
+    }
+    .numbers{
+        font-size: 2em;
+        text-align: right;
+        p {
+           margin: 0;
+        }
+    }
+
 }

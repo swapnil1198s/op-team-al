@@ -124,7 +124,7 @@ class EmployeeSerializer(serializers.ModelSerializer):
                   'title_id',
                   'title',
                   'talents',
-                  'projects')
+                  'projects',)
         depth = 2
 
 

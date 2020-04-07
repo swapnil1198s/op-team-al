@@ -66,9 +66,10 @@ class EmployeeFilter(df.FilterSet):
     location_id_in = NumberInFilter(field_name='location', lookup_expr='in')
     availability_gte = df.DateTimeFilter(field_name="availability", lookup_expr='gte')
     availability_lte = df.DateTimeFilter(field_name="availability", lookup_expr='lte')
+    is_free = df.BooleanFilter(field_name="is_free")
     class Meta:
         model = Employee
-        fields = ['title_id_in', 'location_id_in', 'availability_gte', 'availability_lte']
+        fields = ['title_id_in', 'location_id_in', 'availability_gte', 'availability_lte', 'is_free']
 
 class EmployeesViewSet(viewsets.ModelViewSet):
     queryset = Employee.objects.all()
@@ -307,6 +308,17 @@ class EmployeeCountView(APIView):
     def get(self, request, format=None):
         employee_count = Employee.objects.all().count()
         content = {'employee_count': employee_count}
+        return Response(content)
+
+class ProjectCountView(APIView):
+    """
+    A view that returns the count of active users in JSON.
+    """
+    renderer_classes = [JSONRenderer]
+
+    def get(self, request, format=None):
+        project_count = Project.objects.all().count()
+        content = {'project_count': project_count}
         return Response(content)
 
 

@@ -1,10 +1,10 @@
 import React, { Component } from "react";
 import ChartistGraph from "react-chartist";
-import { Grid, Row, Col } from "react-bootstrap";
+import { Grid, Row, Col, Button } from "react-bootstrap";
 
 import { Card } from "../components/Card/Card.jsx";
 import { StatsCard } from "../components/StatsCard/StatsCard.jsx";
-import { Tasks } from "../components/Tasks/Tasks.jsx"
+import { EmployeeAlerts } from "../components/EmployeeAlerts/EmployeeAlerts.jsx"
 import {
   dataPie,
   legendPie,
@@ -19,6 +19,57 @@ import {
 } from "../variables/Variables.jsx";
 
 class Dashboard extends Component {
+
+  state = {
+    employeeDashboard: true,
+    projectDashboard: false,
+    employeeCount:null,
+    projectCount:null,
+    employees_need_project:null
+
+  }
+
+  componentDidMount() {
+    const url = 'http://localhost:8000/api/employee-count'; 
+    fetch(url)
+    .then(res => res.json())
+    .then((data) => {
+      this.setState({employeeCount:data.employee_count})
+    })
+    .catch(console.log)
+  };
+
+
+  componentDidMount() {
+    var tempDate = new Date();
+    var date =   + (tempDate.getMonth()+1) + '/' +tempDate.getDate() + '/' + tempDate.getFullYear();
+        Promise.all([fetch('http://localhost:8000/api/employee-count'),
+                     fetch('http://localhost:8000/api/project-count')])
+
+      .then(([res1, res2,res3]) => { 
+         return Promise.all([res1.json(), res2.json()]) 
+      })
+      .then(([res1, res2]) => {
+
+        this.setState({employeeCount:res1.employee_count})
+        this.setState({projectCount:res2.project_count})
+        
+      });
+}
+
+
+  employeeDashboard() {  
+    this.setState({  
+      employeeDashboard: true,
+      projectDashboard:false
+      });  
+    } 
+  projectDashboard() {  
+      this.setState({  
+        employeeDashboard: false,
+        projectDashboard:true
+        });  
+  } 
   createLegend(json) {
     var legend = [];
     for (var i = 0; i < json["names"].length; i++) {
@@ -30,54 +81,61 @@ class Dashboard extends Component {
     return legend;
   }
   render() {
+    let btn_class_employee = this.state.employeeDashboard ? "card card-stats-active" : "card card-stats";
+    let btn_class_project = this.state.projectDashboard ? "card card-stats-active" : "card card-stats";
     return (
+      
       <div className="content">
         <Grid fluid>
           <Row>
-            <Col lg={3} sm={6}>
+            <Col lg={2} sm={2} lgOffset={2}>
               <StatsCard
-                bigIcon={<i className="pe-7s-server text-warning" />}
-                statsText="Number of Employees"
-                statsValue="105GB"
-                statsIcon={<i className="fa fa-refresh" />}
-                statsIconText="Updated now"
+                bigIcon={<i className="material-icons employee-icon">group</i>}
+                statsText="Employee Count"
+                statsValue={this.state.employeeCount}
+                statsIcon={<i className="material-icons">bar_chart</i>}
+                statsIconText="Click to see Employee Dashboard"
+                switchDashboard={this.employeeDashboard.bind(this)}
+                btn_class={btn_class_employee}
+
               />
             </Col>
-            <Col lg={3} sm={6}>
+            <Col lg={2} sm={2} lgOffset={2}>
               <StatsCard
-                bigIcon={<i className="pe-7s-wallet text-success" />}
-                statsText="Revenue"
-                statsValue="$1,345"
-                statsIcon={<i className="fa fa-calendar-o" />}
-                statsIconText="Last day"
-              />
-            </Col>
-            <Col lg={3} sm={6}>
-              <StatsCard
-                bigIcon={<i className="pe-7s-graph1 text-danger" />}
-                statsText="Errors"
-                statsValue="23"
-                statsIcon={<i className="fa fa-clock-o" />}
-                statsIconText="In the last hour"
-              />
-            </Col>
-            <Col lg={3} sm={6}>
-              <StatsCard
-                bigIcon={<i className="fa fa-twitter text-info" />}
-                statsText="Followers"
-                statsValue="+45"
-                statsIcon={<i className="fa fa-refresh" />}
-                statsIconText="Updated now"
+                bigIcon={<i className="material-icons project-icon">work</i>}
+                statsText="Project Count"
+                statsValue={this.state.projectCount}
+                statsIcon={<i className="material-icons">bar_chart</i>}
+                statsIconText="Click to see Project Dashboard"
+                switchDashboard={this.projectDashboard.bind(this)}
+                btn_class={btn_class_project}
               />
             </Col>
           </Row>
+          {this.state.employeeDashboard ?  
+            <div>
           <Row>
+          <Col md={12}>
+            <Card
+              title="Employee Alerts"
+              category="Employee Related Alerts"
+              stats="Updated 3 minutes ago"
+              statsIcon="fa fa-history"
+              content={
+                <div className="table-full-width">
+                  <table className="table">
+                    <EmployeeAlerts/>
+                  </table>
+                </div>
+              }
+            />
+          </Col>
             <Col md={8}>
               <Card
                 statsIcon="fa fa-history"
                 id="chartHours"
-                title="Users Behavior"
-                category="24 Hours performance"
+                title="Employees Over Time"
+                category="Employees Over Time"
                 stats="Updated 3 minutes ago"
                 content={
                   <div className="ct-chart">
@@ -97,7 +155,97 @@ class Dashboard extends Component {
             <Col md={4}>
               <Card
                 statsIcon="fa fa-clock-o"
-                title="Email Statistics"
+                title="Employee Statistics"
+                category="Employees by titles"
+                stats="Updated just now"
+                content={
+                  <div
+                    id="chartPreferences"
+                    className="ct-chart ct-perfect-fourth"
+                  >
+                    <ChartistGraph data={dataPie} type="Pie" />
+                  </div>
+                }
+                legend={
+                  <div className="legend">{this.createLegend(legendPie)}</div>
+                }
+              />
+            </Col>
+          </Row>
+          <Row>
+          <Col md={6}>
+            <Card
+              id="chartActivity"
+              title="Employess Over Time"
+              category="Active employees at a point in time"
+              stats="Data information certified"
+              statsIcon="fa fa-check"
+              content={
+                <div className="ct-chart">
+                  <ChartistGraph
+                    data={dataBar}
+                    type="Bar"
+                    options={optionsBar}
+                    responsiveOptions={responsiveBar}
+                  />
+                </div>
+              }
+              legend={
+                <div className="legend">{this.createLegend(legendBar)}</div>
+              }
+            />
+          </Col>
+
+
+        </Row>
+        </div>
+         
+        : null
+        }
+        {this.state.projectDashboard ?  
+          <div>
+          <Row>
+          <Col md={12}>
+            <Card
+              title="Project Alerts"
+              category="Project Related Alerts"
+              stats="Updated 3 minutes ago"
+              statsIcon="fa fa-history"
+              content={
+                <div className="table-full-width">
+                  <table className="table">
+                    <EmployeeAlerts />
+                  </table>
+                </div>
+              }
+            />
+          </Col>
+            <Col md={8}>
+              <Card
+                statsIcon="fa fa-history"
+                id="chartHours"
+                title="Project"
+                category="Projects over time"
+                stats="Updated 3 minutes ago"
+                content={
+                  <div className="ct-chart">
+                    <ChartistGraph
+                      data={dataSales}
+                      type="Line"
+                      options={optionsSales}
+                      responsiveOptions={responsiveSales}
+                    />
+                  </div>
+                }
+                legend={
+                  <div className="legend">{this.createLegend(legendSales)}</div>
+                }
+              />
+            </Col>
+            <Col md={4}>
+              <Card
+                statsIcon="fa fa-clock-o"
+                title="Project Statistics"
                 category="Last Campaign Performance"
                 stats="Campaign sent 2 days ago"
                 content={
@@ -114,47 +262,37 @@ class Dashboard extends Component {
               />
             </Col>
           </Row>
-
           <Row>
-            <Col md={6}>
-              <Card
-                id="chartActivity"
-                title="2014 Sales"
-                category="All products including Taxes"
-                stats="Data information certified"
-                statsIcon="fa fa-check"
-                content={
-                  <div className="ct-chart">
-                    <ChartistGraph
-                      data={dataBar}
-                      type="Bar"
-                      options={optionsBar}
-                      responsiveOptions={responsiveBar}
-                    />
-                  </div>
-                }
-                legend={
-                  <div className="legend">{this.createLegend(legendBar)}</div>
-                }
-              />
-            </Col>
+          <Col md={6}>
+            <Card
+              id="chartActivity"
+              title="Project Start vs Finish"
+              category="All Projects"
+              stats="Data information certified"
+              statsIcon="fa fa-check"
+              content={
+                <div className="ct-chart">
+                  <ChartistGraph
+                    data={dataBar}
+                    type="Bar"
+                    options={optionsBar}
+                    responsiveOptions={responsiveBar}
+                  />
+                </div>
+              }
+              legend={
+                <div className="legend">{this.createLegend(legendBar)}</div>
+              }
+            />
+          </Col>
 
-            <Col md={6}>
-              <Card
-                title="Tasks"
-                category="Backend development"
-                stats="Updated 3 minutes ago"
-                statsIcon="fa fa-history"
-                content={
-                  <div className="table-full-width">
-                    <table className="table">
-                      <Tasks />
-                    </table>
-                  </div>
-                }
-              />
-            </Col>
-          </Row>
+
+        </Row>
+        </div>
+          
+         
+        : null
+        }  
         </Grid>
       </div>
     );
