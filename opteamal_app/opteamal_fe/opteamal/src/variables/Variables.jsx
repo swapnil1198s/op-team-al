@@ -479,11 +479,11 @@ const iconsArray = [
 //
 // Data for Pie Chart
 var dataPie = {
-  labels: ["40%", "20%", "40%"],
-  series: [40, 20, 40]
+  labels: ["40%", "50%", "10%"],
+  series: [40, 50, 10]
 };
 var legendPie = {
-  names: ["Open", "Bounce", "Unsubscribe"],
+  names: ["Java", "Python", "C#"],
   types: ["info", "danger", "warning"]
 };
 
@@ -534,7 +534,7 @@ var responsiveSales = [
   ]
 ];
 var legendSales = {
-  names: ["Open", "Click", "Click Second Time"],
+  names: ["Required", "Available"],
   types: ["info", "danger", "warning"]
 };
 
