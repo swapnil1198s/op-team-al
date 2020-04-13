@@ -142,11 +142,11 @@ class Dashboard extends Component {
           <Row>
           
             <Col md={8}>
-              <Card
+            <Card
                 statsIcon="fa fa-history"
                 id="chartHours"
-                title="Employees Over Time"
-                category="Employees Over Time"
+                title="Needed vs Available employees"
+                category="over last 4 years"
                 stats="Updated 3 minutes ago"
                 content={
                   <div className="ct-chart">
@@ -164,11 +164,11 @@ class Dashboard extends Component {
               />
             </Col>
             <Col md={4}>
-              <Card
+            <Card
                 statsIcon="fa fa-clock-o"
-                title="Employee Statistics"
-                category="Employees by titles"
-                stats="Updated just now"
+                title="Needed Talent Distribution"
+                category="Based on title"
+                stats="Updated 1 day ago"
                 content={
                   <div
                     id="chartPreferences"
