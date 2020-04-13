@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import ChartistGraph from "react-chartist";
-import { Grid, Row, Col, Button } from "react-bootstrap";
-
+import { Grid, Row, Col, Table,ButtonToolbar,OverlayTrigger,Tooltip, Button } from "react-bootstrap";
+import { EmployeeTable } from "../components/EmployeeTable/EmployeeTable.jsx"
 import { Card } from "../components/Card/Card.jsx";
 import { StatsCard } from "../components/StatsCard/StatsCard.jsx";
 import { EmployeeAlerts } from "../components/EmployeeAlerts/EmployeeAlerts.jsx"
@@ -87,8 +87,9 @@ class Dashboard extends Component {
       
       <div className="content">
         <Grid fluid>
-          <Row>
-            <Col lg={2} sm={2} lgOffset={2}>
+          <div class = "container">
+          <div class = "row">
+            <Col md = {6}>
               <StatsCard
                 bigIcon={<i className="material-icons employee-icon">group</i>}
                 statsText="Employee Count"
@@ -100,7 +101,8 @@ class Dashboard extends Component {
 
               />
             </Col>
-            <Col lg={2} sm={2} lgOffset={2}>
+            
+            <Col md = {6}>
               <StatsCard
                 bigIcon={<i className="material-icons project-icon">work</i>}
                 statsText="Project Count"
@@ -111,25 +113,34 @@ class Dashboard extends Component {
                 btn_class={btn_class_project}
               />
             </Col>
-          </Row>
+            
+          </div>
+          
+          </div>
+          
+          
           {this.state.employeeDashboard ?  
+
             <div>
+              <Row>
+            <div class = "col align-self-center"  >
+              <Card
+                title="Employee Alerts"
+                category="Employee Related Alerts"
+                stats="Updated 3 minutes ago"
+                statsIcon="fa fa-history"
+                content={
+                  <div className="table-full-width">
+                    <table className="table">
+                      <EmployeeAlerts/>
+                    </table>
+                  </div>
+                }
+              />
+            </div>
+          </Row>
           <Row>
-          <Col md={12}>
-            <Card
-              title="Employee Alerts"
-              category="Employee Related Alerts"
-              stats="Updated 3 minutes ago"
-              statsIcon="fa fa-history"
-              content={
-                <div className="table-full-width">
-                  <table className="table">
-                    <EmployeeAlerts/>
-                  </table>
-                </div>
-              }
-            />
-          </Col>
+          
             <Col md={8}>
               <Card
                 statsIcon="fa fa-history"
@@ -195,7 +206,34 @@ class Dashboard extends Component {
               }
             />
           </Col>
-
+          <Col md={6}>
+              <Card
+                title="Available employees"
+                category={"Employees ("+this.state.employees_count+")"}
+                ctTableFullWidth
+                ctTableResponsive
+                content={                  
+                  <Table hover>
+                    <thead>
+                        <tr>
+                          
+                          <th>Name</th>
+                          <th>Email</th>
+                          <th>Management Level</th>
+                          <th>Title</th>
+                          <th>Start Date</th> 
+                          <th>Next Availability</th> 
+                          <th>Location</th>
+                          
+                          <th>Talents</th> 
+                        </tr>
+                    </thead>
+                      
+                  </Table>
+                }
+              />
+            </Col>
+            
 
         </Row>
         </div>
@@ -285,7 +323,30 @@ class Dashboard extends Component {
               }
             />
           </Col>
-
+          <Col md={6}>
+              <Card
+                title="Projects near finishing"
+                category={"Projects (" +this.state.projects_count +")"}
+                ctTableFullWidth
+                ctTableResponsive
+                content={
+                <Table hover>
+                  <thead>
+                      <tr>
+                        <th></th>
+                        <th>Project Name</th>
+                        <th>Project Lead</th>
+                        <th>Location</th>
+                        <th>Start Date</th> 
+                        <th>Due Date</th> 
+                        <th>Client</th>   
+                      </tr>
+                  </thead>
+                    
+                </Table>
+                }
+              />
+            </Col>
 
         </Row>
         </div>
