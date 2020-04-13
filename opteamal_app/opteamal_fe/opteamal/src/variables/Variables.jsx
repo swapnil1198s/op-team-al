@@ -581,7 +581,7 @@ var responsiveBar = [
   ]
 ];
 var legendBar = {
-  names: ["Tesla Model S", "BMW 5 Series"],
+  names: ["Available", "Required"],
   types: ["info", "danger"]
 };
 
