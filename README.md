@@ -24,7 +24,9 @@ https://docs.python-guide.org/dev/virtualenvs/
 
 1)From the base of the repo, navigate to the /opteamal_app/opteamal_be/opteamal/
 ```
-cd /opteamal_app/opteamal_fe/opteamal/
+cd opteamal_app
+cd opteamal_fe
+cd opteamal
 ```
 
 2)Install all dependencies with this command
