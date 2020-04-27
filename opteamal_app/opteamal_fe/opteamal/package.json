@@ -9,7 +9,7 @@
     "@testing-library/react": "^9.4.1",
     "@testing-library/user-event": "^7.2.1",
     "@yazanaabed/react-tabs": "^2.3.6",
-    "bootstrap": "3.3.7",
+    "bootstrap": "3.4.1",
     "chartist": "0.10.1",
     "node-sass": "^4.13.1",
     "react": "16.8.6",
