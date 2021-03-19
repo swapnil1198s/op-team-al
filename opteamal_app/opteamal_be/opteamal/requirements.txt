@@ -8,6 +8,6 @@ django-filter==2.2.0
 markdown==3.1.1
 wheel==0.34.2
 psycopg2-binary==2.8.4
-djangorestframework==3.11.0
+djangorestframework==3.11.2
 mysqlclient==1.4.6
 django-filter==2.2.0
