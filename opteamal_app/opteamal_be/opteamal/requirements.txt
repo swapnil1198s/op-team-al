@@ -1,5 +1,5 @@
 requests
-django==3.0.3
+django==3.0.14
 pylint-django==2.0.13
 django-cors-headers==3.2.1
 pyyaml==5.3
