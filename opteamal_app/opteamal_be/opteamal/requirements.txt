@@ -6,7 +6,7 @@ pyyaml==5.3
 uritemplate==3.0.1
 django-filter==2.2.0
 markdown==3.1.1
-wheel==0.34.2
+wheel==0.38.1
 psycopg2-binary==2.8.4
 djangorestframework==3.11.0
 mysqlclient==1.4.6
